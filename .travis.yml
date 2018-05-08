@@ -3,9 +3,21 @@ cache: packages
 warnings_are_errors: true
 sudo: required
 
+env:
+  global:
+    - HDF5_RELEASE_URL="https://support.hdfgroup.org/ftp/HDF5/releases"
+    - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
+    - HDF5_VERSION=1.10.1
+
 before_install:
-  - sudo apt-get update -q
-  - sudo apt-get install -y -q libhdf5-dev
+  - pushd ..
+  - wget "$HDF5_RELEASE_URL/hdf5-${HDF5_VERSION%.*}/hdf5-$HDF5_VERSION/src/hdf5-$HDF5_VERSION.tar.gz"
+  - tar -xzf "hdf5-$HDF5_VERSION.tar.gz"
+  - pushd "hdf5-$HDF5_VERSION"
+  - ./configure --prefix=/usr/local
+  - sudo make install
+  - popd
+  - popd
 
 r_packages:
   - data.table
