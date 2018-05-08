@@ -26,4 +26,4 @@ r_packages:
   - bit64
 
 r_github_packages:
-  - lineSampler
+  - wrathematics/lineSampler
