@@ -5,6 +5,7 @@ sudo: required
 
 env:
   global:
+    - MAKEFLAGS="-j 2"
     - HDF5_RELEASE_URL="https://support.hdfgroup.org/ftp/HDF5/releases"
     - LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib
     - HDF5_VERSION=1.10.1
