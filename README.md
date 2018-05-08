@@ -1,7 +1,7 @@
 # hdfio
 
 * **Version:** 0.1-0
-* **Status:** [![Build Status](https://travis-ci.org/wrathematics/thrust.png)](https://travis-ci.org/wrathematics/hdfio)
+* **Status:** [![Build Status](https://travis-ci.org/RBigData/hdfio.png)](https://travis-ci.org/RBigData/hdfio)
 * **License:** [BSD 2-Clause](http://opensource.org/licenses/BSD-2-Clause)
 * **Author:** Drew Schmidt and Amil Williamson
 
@@ -21,7 +21,7 @@ The development version is maintained on GitHub, and can easily be installed by 
 
 ```r
 ### Pick your preference
-devtools::install_github("wrathematics/hdfio")
-ghit::install_github("wrathematics/hdfio")
-remotes::install_github("wrathematics/hdfio")
+devtools::install_github("RBigData/hdfio")
+ghit::install_github("RBigData/hdfio")
+remotes::install_github("RBigData/hdfio")
 ```
