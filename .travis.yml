@@ -1,6 +1,11 @@
 language: R
 cache: packages
 warnings_are_errors: true
+sudo: required
+
+before_install:
+  - sudo apt-get update -q
+  - sudo apt-get install -y -q libhdf5-dev
 
 r_packages:
   - data.table
