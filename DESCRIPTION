@@ -1,0 +1,24 @@
+Package: hdfio
+Type: Package
+Title: HDF5 I/O Utilities
+Version: 0.1-0
+Description: A set of high-level utilities for working with hdf5.
+License: BSD 2-clause License + file LICENSE
+Depends:
+    R (>= 3.1.0)
+Imports:
+    data.table,
+    lineSampler,
+    memuse,
+    hdf5r
+Suggests:
+    bit64
+ByteCompile: yes
+BugReports: https://github.com/rbigdata/hdfio/issues
+Authors@R: c(
+    person("Drew", "Schmidt", role=c("aut", "cre"), email="wrathematics@gmail.com"),
+    person("Amil", "Williamson", role="aut"),
+    person("ORNL", role = "cph")
+    )
+Maintainer: Drew Schmidt <wrathematics@gmail.com>
+RoxygenNote: 6.0.1

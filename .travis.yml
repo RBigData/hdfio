@@ -1,0 +1,12 @@
+language: R
+cache: packages
+warnings_are_errors: true
+
+r_packages:
+  - data.table
+  - memuse
+  - hdf5r
+  - bit64
+
+r_github_packages:
+  - lineSampler
