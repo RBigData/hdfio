@@ -27,7 +27,7 @@ read_h5df = function(h5in, dataset)
   if (!valid)
     stop("h5in/dataset does not point to a valid dataset/h5df file")
   
-  f = h5file(h5in)
+  f = h5file(h5in, mode="r")
   
   len = f[[dataset]][["table"]]$dims
   df = f[[dataset]][["table"]][1:len]
