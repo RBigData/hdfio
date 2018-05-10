@@ -7,10 +7,10 @@ License: BSD 2-clause License + file LICENSE
 Depends:
     R (>= 3.1.0)
 Imports:
-    data.table,
+    data.table (>= 1.11.0),
     lineSampler,
-    memuse,
-    hdf5r
+    memuse (>= 4.0.0),
+    hdf5r (>= 1.0.0)
 Suggests:
     bit64
 ByteCompile: yes
