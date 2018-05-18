@@ -4,7 +4,7 @@
 \alias{is_h5df}
 \title{is_h5df}
 \usage{
-is_h5df(h5in, dataset)
+is_h5df(h5in, dataset = NULL)
 }
 \arguments{
 \item{h5in}{Input file.}

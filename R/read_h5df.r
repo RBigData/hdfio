@@ -5,7 +5,7 @@
 #' @param h5in
 #' Input file.
 #' @param dataset
-#' Dataset in input file to read.
+#' Dataset in input file to read or \code{NULL}. In the latter case, TODO
 #' 
 #' @return
 #' A dataframe.
@@ -21,13 +21,15 @@
 #' \code{\link{is_h5df}}
 #' 
 #' @export
-read_h5df = function(h5in, dataset)
+read_h5df = function(h5in, dataset=NULL)
 {
-  valid = is_h5df(h5in=h5in, dataset=dataset)
-  if (!valid)
-    stop("h5in/dataset does not point to a valid dataset/h5df file")
+  check.is.string(h5in)
+  if (!is.null(dataset))
+    check.is.string(dataset)
   
-  f = h5file(h5in, mode="r")
+  f = hdf5r::h5file(h5in, mode="r")
+  dataset = get_dataset(f, dataset)
+  check_is_h5df_from_pandas(f, dataset)
   
   len = f[[dataset]][["table"]]$dims
   df = f[[dataset]][["table"]][1:len]
