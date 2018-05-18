@@ -3,3 +3,4 @@
 export(is_h5df)
 export(read_h5df)
 importFrom(hdf5r,h5file)
+useDynLib(hdfio,R_space_pad_strings)
