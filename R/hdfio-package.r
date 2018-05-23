@@ -4,7 +4,7 @@
 #' 
 #' @importFrom hdf5r h5file
 #' 
-#' @useDynLib hdfio R_space_pad_strings
+#' @useDynLib hdfio R_get_max_str_len R_space_pad_strings
 #' 
 #' @name hdfio-package
 #' @docType package
