@@ -113,6 +113,10 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' Input file.
 #' @param dataset
 #' Dataset in input file to read or \code{NULL}. In the latter case, TODO
+#' @param rows
+#' TODO
+#' @param verbose
+#' TODO
 #' 
 #' @return
 #' A dataframe.

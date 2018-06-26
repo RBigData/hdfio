@@ -10,6 +10,10 @@ read_h5df(h5in, dataset = NULL, rows = NULL, verbose = FALSE)
 \item{h5in}{Input file.}
 
 \item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case, TODO}
+
+\item{rows}{TODO}
+
+\item{verbose}{TODO}
 }
 \value{
 A dataframe.
@@ -20,7 +24,7 @@ TODO
 \examples{
 library(hdfio)
 
-h5in = system.file("exampledata/from_pandas.h5", package="hdfio")
+h5in = system.file("exampledata/pandas_table.h5", package="hdfio")
 df = read_h5df(h5in, "mydata")
 df
 
