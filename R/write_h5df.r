@@ -28,7 +28,7 @@ write_factor_column = function(x, h5_fp, dataset, varname)
 
 write_string_column = function(x, h5_fp, dataset, varname)
 {
-  len = hdfio:::get_max_str_len(x)
+  len = get_max_str_len(x)
   str_fixed_len <- H5T_STRING$new(size = len)
   
   dims = H5S$new(dims=length(x), maxdims=Inf)
