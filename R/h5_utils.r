@@ -60,9 +60,11 @@ h5_dim = function(h5_fp, dataset)
 {
   format = h5_detect_format(h5_fp, dataset, verbose=FALSE)
   
-  if (format == "hdfio")
+  if (format == "hdfio_column")
   {
-    # TODO
+    f = h5_fp[[dataset]]
+    nrows = f[[list.datasets(f)[1]]]$dims
+    ncols = length(list.datasets(f))
   }
   else if (format == "pytables_table")
   {
@@ -76,9 +78,7 @@ h5_dim = function(h5_fp, dataset)
     ncols = h5_fp[[dataset]][["axis0"]]$maxdims
   }
   else
-  {
-    # TODO
-  }
+    stop("unknown format")
   
   c(nrows, ncols)
 }
@@ -89,10 +89,8 @@ h5_colnames = function(h5_fp, dataset)
 {
   format = h5_detect_format(h5_fp, dataset, verbose=FALSE)
   
-  if (format == "hdfio")
-  {
-    # TODO
-  }
+  if (format == "hdfio_column")
+    h5attr(h5_fp[[dataset]], "VARNAMES")
   else if (format == "pytables_table")
   {
     cn = colnames(h5_fp[[dataset]][["table"]][1])
@@ -101,7 +99,5 @@ h5_colnames = function(h5_fp, dataset)
   else if (format == "pytables_fixed")
     h5_fp[[dataset]][["axis0"]][]
   else
-  {
-    # TODO
-  }
+    stop("unknown format")
 }
