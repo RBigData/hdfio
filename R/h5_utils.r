@@ -64,13 +64,13 @@ h5_dim = function(h5_fp, dataset)
   {
     # TODO
   }
-  else if (format == "pandas_table")
+  else if (format == "pytables_table")
   {
     nrows = h5_fp[[dataset]][["table"]]$dims
     # FIXME this is really stupid...
     ncols = ncol(h5_fp[[dataset]][["table"]][1]) - 1L # we don't count the index since we drop it in the reader
   }
-  else if (format == "pandas_fixed")
+  else if (format == "pytables_fixed")
   {
     nrows = h5_fp[[dataset]][["axis1"]]$maxdims
     ncols = h5_fp[[dataset]][["axis0"]]$maxdims
@@ -93,13 +93,13 @@ h5_colnames = function(h5_fp, dataset)
   {
     # TODO
   }
-  else if (format == "pandas_table")
+  else if (format == "pytables_table")
   {
     cn = colnames(h5_fp[[dataset]][["table"]][1])
     cn[-grep("^index$", cn, perl=TRUE)] # don't include the index since we drop it in the reader
   }
-  else if (format == "pandas_fixed")
-    h5_fp[["mydata"]][["axis0"]][]
+  else if (format == "pytables_fixed")
+    h5_fp[[dataset]][["axis0"]][]
   else
   {
     # TODO
