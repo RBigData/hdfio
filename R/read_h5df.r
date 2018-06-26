@@ -120,7 +120,7 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' @examples
 #' library(hdfio)
 #' 
-#' h5in = system.file("exampledata/from_pandas.h5", package="hdfio")
+#' h5in = system.file("exampledata/pandas_table.h5", package="hdfio")
 #' df = read_h5df(h5in, "mydata")
 #' df
 #' 

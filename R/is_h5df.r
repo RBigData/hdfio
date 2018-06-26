@@ -16,7 +16,7 @@
 #' @examples
 #' library(hdfio)
 #' 
-#' f = system.file("exampledata/from_pandas.h5", package="hdfio")
+#' f = system.file("exampledata/pandas_table.h5", package="hdfio")
 #' is_h5df(f, "mydata")
 #' is_h5df(f, "/")
 #' 
