@@ -1,4 +1,54 @@
 # -----------------------------------------------------------------------------
+# hdfio readers
+# -----------------------------------------------------------------------------
+
+read_atomic_column = function(h5_fp, dataset, varname, rows)
+{
+  if (is.null(rows))
+    h5_fp[[dataset]][[varname]][]
+  else
+    h5_fp[[dataset]][[varname]][rows]
+}
+
+
+
+read_factor_column = function(h5_fp, dataset, varname, rows)
+{
+  levels = h5attributes(h5_fp[[dataset]][[varname]])$LEVELS
+  
+  x = read_atomic_column(h5_fp, dataset, varname, rows)
+  
+  levels(x) = levels
+  class(x) = "factor"
+  x
+}
+
+
+
+read_h5df_column = function(h5_fp, dataset, rows)
+{
+  cols = list.datasets(h5_fp[[dataset]])
+  x = vector(mode="list", length=length(cols))
+  names(x) = h5attributes(h5_fp[[dataset]])$VARNAMES
+  
+  for (j in 1:length(cols))
+  {
+    nm = paste0("x", j)
+    class = h5attributes(h5_fp[[dataset]][[nm]])$CLASS
+    
+    if (is.null(class))
+      x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
+    else
+      x[[j]] = read_factor_column(h5_fp, dataset, nm, rows)
+  }
+  
+  data.table::setDF(x)
+  x
+}
+
+
+
+# -----------------------------------------------------------------------------
 # pytables readers
 # -----------------------------------------------------------------------------
 
@@ -94,7 +144,9 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, verbose=FALSE)
   dataset = h5_get_dataset(h5_fp, dataset)
   fmt = h5_detect_format(h5_fp, dataset, verbose)
   
-  if (fmt == "pytables_table")
+  if (fmt == "hdfio_column")
+    df = read_h5df_column(h5_fp, dataset, rows)
+  else if (fmt == "pytables_table")
     df = read_pytables_table(h5_fp, dataset, rows)
   else if (fmt == "pytables_fixed")
     df = read_pytables_fixed(h5_fp, dataset, rows)

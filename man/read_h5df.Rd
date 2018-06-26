@@ -4,7 +4,7 @@
 \alias{read_h5df}
 \title{read_h5df}
 \usage{
-read_h5df(h5in, dataset = NULL)
+read_h5df(h5in, dataset = NULL, rows = NULL, verbose = FALSE)
 }
 \arguments{
 \item{h5in}{Input file.}
@@ -26,5 +26,6 @@ df
 
 }
 \seealso{
-\code{\link{is_h5df}}
+\code{\link{write_h5df}}
 }
+
