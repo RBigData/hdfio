@@ -56,31 +56,36 @@ read_h5df_column = function(h5_fp, dataset, rows)
 read_pytables_fixed = function(h5_fp, dataset, rows)
 {
   columns = list.datasets(h5_fp[[dataset]])
-  columns = columns[grep("block", columns)]
+  items = columns[grep("items", columns)]
+  columns = columns[grep("values", columns)]
   
   if (any(grepl("block2", columns)))
-    close_and_stop("file has string data written in 'fixed' format, which can not be portably read. Please re-write from pandas/pytables with format='table'")
+    close_and_stop(h5_fp, "file has string data written from pandas/pytables in 'fixed' format, which can not be portably read. Please re-write with format='table'")
   
   colnames = h5_fp[[dataset]][["axis0"]][]
   rownames = h5_fp[[dataset]][["axis1"]][]
   
+  n = length(colnames)
   df = vector(mode="list", length=n)
   names(df) = colnames
   
-  for (i in seq(2, length(columns), by=2))
+  for (ind in 1:length(columns))
   {
-    item = columns[i]
-    
-    if (is.null(rows))
-      tmp = h5_fp[[dataset]][[item]][1, ]
-    else
-      tmp = h5_fp[[dataset]][[item]][1, rows]
-    
-    df[h5_fp[[dataset]][columns[i-1]]][1]
+    col_ind = columns[ind]
+    n_block = h5_fp[[dataset]][[col_ind]]$dims[1]
+    for (j_block in 1:n_block)
+    {
+      if (is.null(rows))
+        col = h5_fp[[dataset]][[col_ind]][j_block, ]
+      else
+        col = h5_fp[[dataset]][[col_ind]][j_block, rows]
+      
+      df_j = h5_fp[[dataset]][[items[ind]]][j_block]
+      df[[df_j]] = col
+    }
   }
   
   data.table::setDF(df, rownames=rownames) 
-  
   df
 }
 
