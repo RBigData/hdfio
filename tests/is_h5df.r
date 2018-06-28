@@ -1,6 +1,6 @@
 library(hdfio)
 
-f = system.file("exampledata/pandas_table.h5", package="hdfio")
+f = system.file("exampledata/pytables_table.h5", package="hdfio")
 test = is_h5df(f, "mydata")
 stopifnot(identical(test, TRUE))
 

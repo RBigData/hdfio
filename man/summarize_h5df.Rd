@@ -19,7 +19,7 @@ TODO
 }
 \examples{
 library(hdfio)
-h5in = system.file("exampledata/pandas_table.h5", package="hdfio")
+h5in = system.file("exampledata/pytables_table.h5", package="hdfio")
 summarize_h5df(h5in)
 
 }

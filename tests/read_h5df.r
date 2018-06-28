@@ -1,8 +1,8 @@
 library(hdfio)
 
-f = system.file("exampledata/pandas_table.h5", package="hdfio")
+f = system.file("exampledata/pytables_table.h5", package="hdfio")
 df = read_h5df(f, "mydata")
-stopifnot(identical(dim(df), c(5L, 3L)))
+stopifnot(identical(dim(df), c(5L, 4L)))
 
 err = tryCatch(read_h5df(f, "unknown format"), error=identity)
 stopifnot(inherits(err, "simpleError"))
