@@ -4,7 +4,8 @@
 \alias{read_h5df}
 \title{read_h5df}
 \usage{
-read_h5df(h5in, dataset = NULL, rows = NULL, verbose = FALSE)
+read_h5df(h5in, dataset = NULL, rows = NULL, cols = NULL,
+  verbose = FALSE)
 }
 \arguments{
 \item{h5in}{Input file.}
@@ -12,6 +13,8 @@ read_h5df(h5in, dataset = NULL, rows = NULL, verbose = FALSE)
 \item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case, TODO}
 
 \item{rows}{TODO}
+
+\item{cols}{TODO}
 
 \item{verbose}{TODO}
 }

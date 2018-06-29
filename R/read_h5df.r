@@ -25,15 +25,24 @@ read_factor_column = function(h5_fp, dataset, varname, rows)
 
 
 
-read_h5df_column = function(h5_fp, dataset, rows)
+read_h5df_column = function(h5_fp, dataset, rows, cols)
 {
-  cols = list.datasets(h5_fp[[dataset]])
+  if (is.null(cols))
+  {
+    colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
+    cols = 1:length(colnames)
+  }
+  else
+    colnames = h5attributes(h5_fp[[dataset]])$VARNAMES[cols]
+  
+  # TODO validate cols
+  
   x = vector(mode="list", length=length(cols))
-  names(x) = h5attributes(h5_fp[[dataset]])$VARNAMES
+  names(x) = colnames
   
   for (j in 1:length(cols))
   {
-    nm = paste0("x", j)
+    nm = paste0("x", cols[j])
     class = h5attributes(h5_fp[[dataset]][[nm]])$CLASS
     
     if (is.null(class))
@@ -120,6 +129,8 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' Dataset in input file to read or \code{NULL}. In the latter case, TODO
 #' @param rows
 #' TODO
+#' @param cols
+#' TODO
 #' @param verbose
 #' TODO
 #' 
@@ -137,7 +148,7 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' \code{\link{write_h5df}}
 #' 
 #' @export
-read_h5df = function(h5in, dataset=NULL, rows=NULL, verbose=FALSE)
+read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, verbose=FALSE)
 {
   check.is.string(h5in)
   check.is.flag(verbose)
@@ -145,16 +156,25 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, verbose=FALSE)
     check.is.string(dataset)
   if (!is.null(rows))
   {
-    if (length(rows) == 0 || any(rows < 1) || !all(is.inty(rows)))
+    if (length(rows) == 0 || !all(is.inty(rows)) || any(rows < 1))
       stop("argument 'rows' must be a vector of positive integers")
   }
+  if (!is.null(cols))
+  {
+    if (length(cols) == 0 || !all(is.inty(cols)) || any(cols < 1))
+      stop("argument 'cols' must be a vector of positive integers")
+  }
+  
   
   h5_fp = h5file(h5in, mode="r")
   dataset = h5_get_dataset(h5_fp, dataset)
   fmt = h5_detect_format(h5_fp, dataset, verbose)
   
+  if (!is.null(cols) && fmt != "hdfio_column")
+    close_and_stop(h5_fp, "argument 'cols' can only be a vector of indices if format is hdfio_column")
+  
   if (fmt == "hdfio_column")
-    df = read_h5df_column(h5_fp, dataset, rows)
+    df = read_h5df_column(h5_fp, dataset, rows, cols)
   else if (fmt == "pytables_table")
     df = read_pytables_table(h5_fp, dataset, rows)
   else if (fmt == "pytables_fixed")
