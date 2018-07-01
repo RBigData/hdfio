@@ -79,7 +79,7 @@ write_string_column = function(x, start_ind, h5_fp, dataset, varname)
 
 
 
-write_h5df_column = function(x, start_ind, h5_fp, dataset, stringsAsFactors=TRUE)
+write_h5df_column = function(x, start_ind, h5_fp, dataset)
 {
   if (start_ind == 1)
   {
@@ -101,7 +101,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, stringsAsFactors=TRUE
       write_numeric_column(col, start_ind, h5_fp, dataset, nm)
     else if (class(col) == "logical")
       write_logical_column(col, start_ind, h5_fp, dataset, nm)
-    else if ((class(col) == "character" && isTRUE(stringsAsFactors)) || class(col) == "factor")
+    else if (class(col) == "factor")
       write_factor_column(col, start_ind, h5_fp, dataset, nm)
     else if (class(col) == "character")
       write_string_column(col, start_ind, h5_fp, dataset, nm)
@@ -120,8 +120,6 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, stringsAsFactors=TRUE
 #' Output file.
 #' @param dataset
 #' Dataset in input file to read or \code{NULL}. In the latter case, TODO
-#' @param stringsAsFactors
-#' TODO
 #' @param format
 #' TODO
 #' @param compression
@@ -139,7 +137,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, stringsAsFactors=TRUE
 #' \code{\link{read_h5df}}
 #' 
 #' @export
-write_h5df = function(x, file, dataset, stringsAsFactors=TRUE, format="column", compression=0)
+write_h5df = function(x, file, dataset, format="column", compression=0)
 {
   if (data.table::is.data.table(x))
     data.table::setDF(x)
@@ -150,7 +148,6 @@ write_h5df = function(x, file, dataset, stringsAsFactors=TRUE, format="column", 
   
   check.is.string(file)
   check.is.string(dataset)
-  check.is.flag(stringsAsFactors)
   check.is.string(format)
   check.is.natnum(compression)
   if (compression > 9)
@@ -161,7 +158,7 @@ write_h5df = function(x, file, dataset, stringsAsFactors=TRUE, format="column", 
   h5_fp = h5file(file, mode="a")
   
   if (format == "column")
-    write_h5df_column(x, 1, h5_fp, dataset, stringsAsFactors)
+    write_h5df_column(x, 1, h5_fp, dataset)
   
   h5close(h5_fp)
 }

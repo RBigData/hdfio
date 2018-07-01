@@ -4,8 +4,7 @@
 \alias{write_h5df}
 \title{write_h5df}
 \usage{
-write_h5df(x, file, dataset, stringsAsFactors = TRUE, format = "column",
-  compression = 0)
+write_h5df(x, file, dataset, format = "column", compression = 0)
 }
 \arguments{
 \item{x}{Input dataset (dataframe or datatable)}
@@ -13,8 +12,6 @@ write_h5df(x, file, dataset, stringsAsFactors = TRUE, format = "column",
 \item{file}{Output file.}
 
 \item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case, TODO}
-
-\item{stringsAsFactors}{TODO}
 
 \item{format}{TODO}
 
