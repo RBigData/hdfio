@@ -28,7 +28,13 @@ write_numeric_column = function(x, start_ind, h5_fp, dataset, varname)
 
 
 
-write_logical_column = write_numeric_column
+write_logical_column = function(x, start_ind, h5_fp, dataset, varname)
+{
+  write_numeric_column(x, start_ind, h5_fp, dataset, varname)
+  
+  if (start_ind == 1)
+    h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "logical"
+}
 
 
 
