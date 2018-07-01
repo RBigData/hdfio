@@ -23,7 +23,7 @@ write_numeric_column = function(x, start_ind, h5_fp, dataset, varname)
     h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
   }
   
-  h5_fp[[dataset]][[varname]][start_ind : (start_ind+length(x)-1)] = x
+  h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x
 }
 
 
@@ -47,11 +47,11 @@ write_factor_column = function(x, start_ind, h5_fp, dataset, varname)
     
     # TODO merge factor levels on successive writes
     levels = levels(x)
-    h5attr(h5_fp[[dataset]][[varname]], "LEVELS") = levels
-    h5attr(h5_fp[[dataset]][[varname]], "CLASS") = "factor"
+    h5attr(h5_fp[[glue(dataset, varname)]], "LEVELS") = levels
+    h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "factor"
   }
   
-  h5_fp[[dataset]][[varname]][start_ind : (start_ind+length(x)-1)] = x.int
+  h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x.int
 }
 
 
@@ -68,7 +68,7 @@ write_string_column = function(x, start_ind, h5_fp, dataset, varname)
     h5_fp[[dataset]]$create_dataset(name=varname, dtype=str_fixed_len, space=dims)
   }
   
-  h5_fp[[dataset]][[varname]][start_ind : (start_ind+length(x)-1)] = x
+  h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x
 }
 
 

@@ -4,17 +4,20 @@
 
 read_atomic_column = function(h5_fp, dataset, varname, rows)
 {
+  ds = glue(dataset, varname)
+  
   if (is.null(rows))
-    h5_fp[[dataset]][[varname]][]
+    h5_fp[[ds]][]
   else
-    h5_fp[[dataset]][[varname]][rows]
+    h5_fp[[ds]][rows]
 }
 
 
 
 read_factor_column = function(h5_fp, dataset, varname, rows)
 {
-  levels = h5attributes(h5_fp[[dataset]][[varname]])$LEVELS
+  ds = glue(dataset, varname)
+  levels = h5attributes(h5_fp[[ds]])$LEVELS
   
   x = read_atomic_column(h5_fp, dataset, varname, rows)
   
@@ -43,7 +46,7 @@ read_h5df_column = function(h5_fp, dataset, rows, cols)
   for (j in 1:length(cols))
   {
     nm = paste0("x", cols[j])
-    class = h5attributes(h5_fp[[dataset]][[nm]])$CLASS
+    class = h5attributes(h5_fp[[glue(dataset, nm)]])$CLASS
     
     if (is.null(class))
       x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
@@ -71,8 +74,8 @@ read_pytables_fixed = function(h5_fp, dataset, rows)
   if (any(grepl("block2", columns)))
     close_and_stop(h5_fp, "file has string data written from pandas/pytables in 'fixed' format, which can not be portably read. Please re-write with format='table'")
   
-  colnames = h5_fp[[dataset]][["axis0"]][]
-  rownames = h5_fp[[dataset]][["axis1"]][]
+  colnames = h5_fp[[glue(dataset, "axis0")]][]
+  rownames = h5_fp[[glue(dataset, "axis1")]][]
   
   n = length(colnames)
   df = vector(mode="list", length=n)
@@ -81,15 +84,17 @@ read_pytables_fixed = function(h5_fp, dataset, rows)
   for (ind in 1:length(columns))
   {
     col_ind = columns[ind]
-    n_block = h5_fp[[dataset]][[col_ind]]$dims[1]
+    ds = glue(dataset, col_ind)
+    n_block = h5_fp[[ds]]$dims[1]
+    
     for (j_block in 1:n_block)
     {
       if (is.null(rows))
-        col = h5_fp[[dataset]][[col_ind]][j_block, ]
+        col = h5_fp[[ds]][j_block, ]
       else
-        col = h5_fp[[dataset]][[col_ind]][j_block, rows]
+        col = h5_fp[[ds]][j_block, rows]
       
-      df_j = h5_fp[[dataset]][[items[ind]]][j_block]
+      df_j = h5_fp[[glue(dataset, items[ind])]][j_block]
       df[[df_j]] = col
     }
   }
@@ -104,9 +109,9 @@ read_pytables_fixed = function(h5_fp, dataset, rows)
 read_pytables_table = function(h5_fp, dataset, rows)
 {
   if (is.null(rows))
-    df = h5_fp[[dataset]][["table"]][]
+    df = h5_fp[[glue(dataset, "table")]][]
   else
-    df = h5_fp[[dataset]][["table"]][rows]
+    df = h5_fp[[glue(dataset, "table")]][rows]
   
   df$index = NULL
   
