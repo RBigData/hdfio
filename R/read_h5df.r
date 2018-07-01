@@ -38,7 +38,6 @@ read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
       is_string = sapply(datasets, function(ds) h5_is_string(h5_fp, dataset, ds))
       cols = which(!is_string)
       colnames = h5attributes(h5_fp[[dataset]])$VARNAMES[cols]
-      print(colnames)
     }
     else
     {
