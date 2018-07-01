@@ -1,5 +1,3 @@
-HDFIO_VERSION = "1.0-0"
-
 check_df_cols = function(df)
 {
   for (j in 1:NCOL(df))
