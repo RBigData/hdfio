@@ -13,6 +13,15 @@ close_and_stop = function(h5_fp, msg)
 
 
 
+h5_is_string = function(h5_fp, dataset, varname)
+{
+  typename = as.character(h5_fp[[glue(dataset, varname)]]$get_type()$get_class())
+  
+  typename == "H5T_STRING"
+}
+
+
+
 h5_detect_format = function(h5_fp, dataset, verbose=FALSE)
 {
   if (isTRUE(verbose))
