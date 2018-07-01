@@ -12,6 +12,8 @@ csv2h5(csvfile, csvdir = NULL, h5out, dataset, format = "column",
 
 \item{csvdir}{TODO}
 
+\item{h5out}{Output file.}
+
 \item{dataset}{TODO}
 
 \item{format}{TODO}
@@ -22,8 +24,6 @@ compression).}
 \item{stringsAsFactors}{TODO}
 
 \item{yolo}{TODO}
-
-\item{h5file}{Output file.}
 }
 \value{
 Invisibly returns \code{TRUE} on success.

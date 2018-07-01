@@ -90,7 +90,7 @@ csv2h5_column_file = function(file, h5_fp, dataset, format, stringsAsFactors, yo
 #' Input file.
 #' @param csvdir
 #' TODO
-#' @param h5file
+#' @param h5out
 #' Output file.
 #' @param dataset
 #' TODO
