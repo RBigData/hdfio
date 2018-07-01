@@ -1,21 +1,31 @@
-csv_getdim = function(csvfile)
+csv_nrows = function(csvfile)
 {
-  nrows = lineSampler::wc_l(csvfile)$lines
-  ncols = ncol(data.table::fread(csvfile, nrows=0))
+  lineSampler::wc_l(csvfile)$lines
+}
+
+csv_ncols = function(csvfile)
+{
+  ncol(data.table::fread(csvfile, nrows=0))
+}
+
+csv_dim = function(csvfile)
+{
+  nrows = csv_nrows(csvfile)
+  ncols = csv_ncols(csvfile)
   
   c(nrows, ncols)
 }
 
 
 
-csv_getcolnames = function(csvfile)
+csv_colnames = function(csvfile)
 {
   colnames(data.table::fread(csvfile, nrows=0))
 }
 
 
 
-csv_getstorage = function(csvfile)
+csv_colstorage = function(csvfile)
 {
   # TODO try a sampling strategy
   
