@@ -48,10 +48,17 @@ read_h5df_column = function(h5_fp, dataset, rows, cols)
     nm = paste0("x", cols[j])
     class = h5attributes(h5_fp[[glue(dataset, nm)]])$CLASS
     
-    if (is.null(class))
+    if (length(class) == 0)
       x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
-    else
+    else if (class == "logical")
+    {
+      x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
+      class(x[[j]]) = "logical"
+    }
+    else if (class == "factor")
       x[[j]] = read_factor_column(h5_fp, dataset, nm, rows)
+    else
+      close_and_stop(h5_fp, INTERNAL_ERROR)
   }
   
   data.table::setDF(x)
