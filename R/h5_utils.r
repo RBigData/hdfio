@@ -1,3 +1,10 @@
+glue = function(a, b)
+{
+  paste0(a, "/", b)
+}
+
+
+
 close_and_stop = function(h5_fp, msg)
 {
   h5close(h5_fp)
@@ -68,14 +75,14 @@ h5_dim = function(h5_fp, dataset)
   }
   else if (format == "pytables_table")
   {
-    nrows = h5_fp[[dataset]][["table"]]$dims
+    nrows = h5_fp[[glue(dataset, "table")]]$dims
     # FIXME this is really stupid...
-    ncols = ncol(h5_fp[[dataset]][["table"]][1]) - 1L # we don't count the index since we drop it in the reader
+    ncols = ncol(h5_fp[[glue(dataset, "table")]][1]) - 1L # we don't count the index since we drop it in the reader
   }
   else if (format == "pytables_fixed")
   {
-    nrows = h5_fp[[dataset]][["axis1"]]$maxdims
-    ncols = h5_fp[[dataset]][["axis0"]]$maxdims
+    nrows = h5_fp[[glue(dataset, "axis1")]]$maxdims
+    ncols = h5_fp[[glue(dataset, "axis0")]]$maxdims
   }
   else
     stop("unknown format")
@@ -93,11 +100,11 @@ h5_colnames = function(h5_fp, dataset)
     h5attr(h5_fp[[dataset]], "VARNAMES")
   else if (format == "pytables_table")
   {
-    cn = colnames(h5_fp[[dataset]][["table"]][1])
+    cn = colnames(h5_fp[[glue(dataset, "table")]][1])
     cn[-grep("^index$", cn, perl=TRUE)] # don't include the index since we drop it in the reader
   }
   else if (format == "pytables_fixed")
-    h5_fp[[dataset]][["axis0"]][]
+    h5_fp[[glue(dataset, "axis0")]][]
   else
     stop("unknown format")
 }
