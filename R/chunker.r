@@ -34,11 +34,11 @@ chunker_numchunks = function(file)
   
   check = tryCatch(ram <- memuse::Sys.meminfo()$freeram, error=identity)
   if (inherits(check, "simpleError"))
-    ram = mu(1, "gib")
+    ram = memuse::mu(1, "gib")
   else
     ram = .95*ram
   
-  # ram = mu(10, "mib") # for testing
+  # ram = memuse::mu(10, "mib") # for testing
   
   size = memuse::Sys.filesize(file)
   ceiling(as.numeric(size/ram))
