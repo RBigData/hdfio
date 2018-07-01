@@ -6,6 +6,8 @@
 #' Input file.
 #' @param dataset
 #' TODO
+#' @param colnames
+#' TODO
 #' 
 #' @return
 #' TODO
@@ -16,11 +18,12 @@
 #' summarize_h5df(h5in)
 #' 
 #' @export
-summarize_h5df = function(h5in, dataset=NULL)
+summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)
 {
   check.is.string(h5in)
   if (!is.null(dataset))
     check.is.string(dataset)
+  check.is.flag(colnames)
   
   h5_fp = h5file(h5in, mode="r")
   dataset = h5_get_dataset(h5_fp, dataset)
@@ -30,6 +33,11 @@ summarize_h5df = function(h5in, dataset=NULL)
   fmt = h5_detect_format(h5_fp, dataset)
   dim = h5_dim(h5_fp, dataset)
   
+  if (fmt == "hdfio_column" && isTRUE(colnames))
+    colnames = h5_colnames(h5_fp, dataset)
+  else
+    colnames = NULL
+  
   h5close(h5_fp)
   
   ret = list(
@@ -37,7 +45,8 @@ summarize_h5df = function(h5in, dataset=NULL)
     dataset = dataset,
     file_size = file_size,
     format = fmt,
-    dim = dim
+    dim = dim,
+    colnames = colnames
   )
   
   class(ret) = "summary_h5df"
@@ -62,6 +71,11 @@ print.summary_h5df = function(x, ...)
   cat("Format:     ", x$format, "\n")
   if (x$format != "unknown")
     cat("Dimensions: ", x$dim[1], "x", x$dim[2], "\n")
+  if (!is.null(x$colnames))
+  {
+    num = 1:length(x$colnames)
+    cat("Columns:    ", "\n", paste0("    ", num, ". ", x$colnames, "\n"))
+  }
   
   invisible()
 }

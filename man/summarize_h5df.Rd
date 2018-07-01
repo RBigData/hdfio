@@ -4,12 +4,14 @@
 \alias{summarize_h5df}
 \title{summarize_h5df}
 \usage{
-summarize_h5df(h5in, dataset = NULL)
+summarize_h5df(h5in, dataset = NULL, colnames = FALSE)
 }
 \arguments{
 \item{h5in}{Input file.}
 
 \item{dataset}{TODO}
+
+\item{colnames}{TODO}
 }
 \value{
 TODO
