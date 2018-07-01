@@ -38,7 +38,7 @@ chunker_numchunks = function(file)
   else
     ram = .95*ram
   
-  ram = mu(10, "mib")
+  # ram = mu(10, "mib") # for testing
   
   size = memuse::Sys.filesize(file)
   ceiling(as.numeric(size/ram))
