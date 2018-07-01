@@ -5,7 +5,7 @@
 \title{read_h5df}
 \usage{
 read_h5df(h5in, dataset = NULL, rows = NULL, cols = NULL,
-  verbose = FALSE)
+  strings = TRUE, verbose = FALSE)
 }
 \arguments{
 \item{h5in}{Input file.}
@@ -15,6 +15,8 @@ read_h5df(h5in, dataset = NULL, rows = NULL, cols = NULL,
 \item{rows}{TODO}
 
 \item{cols}{TODO}
+
+\item{strings}{Only available for 'hdfio_columns' format files. Should string columns be read?}
 
 \item{verbose}{TODO}
 }

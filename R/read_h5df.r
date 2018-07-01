@@ -28,17 +28,33 @@ read_factor_column = function(h5_fp, dataset, varname, rows)
 
 
 
-read_h5df_column = function(h5_fp, dataset, rows, cols)
+read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
 {
   if (is.null(cols))
   {
-    colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
-    cols = 1:length(colnames)
+    if (strings == FALSE)
+    {
+      datasets = list.datasets(h5_fp[[dataset]])
+      is_string = sapply(datasets, function(ds) h5_is_string(h5_fp, dataset, ds))
+      cols = which(!is_string)
+      colnames = h5attributes(h5_fp[[dataset]])$VARNAMES[cols]
+      print(colnames)
+    }
+    else
+    {
+      colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
+      cols = 1:length(colnames)
+    }
   }
   else
-    colnames = h5attributes(h5_fp[[dataset]])$VARNAMES[cols]
+  {
+    colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
+    if (max(cols) > length(colnames))
+      close_and_stop(h5_fp, "some 'cols' indices larger than the number of columns in the dataset")
+    
+    colnames = colnames[cols]
+  }
   
-  # TODO validate cols
   
   x = vector(mode="list", length=length(cols))
   names(x) = colnames
@@ -143,6 +159,8 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' TODO
 #' @param cols
 #' TODO
+#' @param strings
+#' Only available for 'hdfio_columns' format files. Should string columns be read?
 #' @param verbose
 #' TODO
 #' 
@@ -160,9 +178,10 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' \code{\link{write_h5df}}
 #' 
 #' @export
-read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, verbose=FALSE)
+read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, verbose=FALSE)
 {
   check.is.string(h5in)
+  check.is.flag(strings)
   check.is.flag(verbose)
   if (!is.null(dataset))
     check.is.string(dataset)
@@ -184,9 +203,13 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, verbose=FALSE)
   
   if (!is.null(cols) && fmt != "hdfio_column")
     close_and_stop(h5_fp, "argument 'cols' can only be a vector of indices if format is hdfio_column")
+  if (!isTRUE(strings) && fmt != "hdfio_column")
+    close_and_stop(h5_fp, "argument 'strings' must be TRUE if format is not hdfio_column")
+  if (!is.null(cols) && !isTRUE(strings))
+    close_and_stop(h5_fp, "must have 'strings=TRUE' when columns are specified via 'cols'")
   
   if (fmt == "hdfio_column")
-    df = read_h5df_column(h5_fp, dataset, rows, cols)
+    df = read_h5df_column(h5_fp, dataset, rows, cols, strings)
   else if (fmt == "pytables_table")
     df = read_pytables_table(h5_fp, dataset, rows)
   else if (fmt == "pytables_fixed")
