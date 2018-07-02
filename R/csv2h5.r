@@ -2,7 +2,7 @@ csv2h5_validation_dir = function(files, h5_fp)
 {
   # Validate colnames across csv files
   colnames = csv_colnames(files[1])
-  for (file in 2:files[-1])
+  for (file in files[-1])
   {
     colnames2 = csv_colnames(file)
     if (!identical(colnames, colnames2))
@@ -138,6 +138,7 @@ csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compres
     check.is.string(csvfile)
   
   check.is.string(h5out)
+  check.is.string(dataset)
   format = match.arg(tolower(format), c("column")) # TODO compound
   check.is.natnum(compression)
   compression = as.integer(compression)
