@@ -15,6 +15,14 @@ h5_is_string = function(h5_fp, dataset, varname)
 
 
 
+h5_check_dataset = function(h5_fp, dataset)
+{
+  if (existsGroup(dataset))
+    close_and_stop(h5_fp, "dataset already exists in h5 file")
+}
+
+
+
 h5_detect_format = function(h5_fp, dataset, verbose=FALSE)
 {
   if (isTRUE(verbose))

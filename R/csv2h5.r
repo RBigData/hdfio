@@ -157,6 +157,7 @@ csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compres
   check.is.flag(verbose)
   
   h5_fp = h5file(h5out, mode="a")
+  h5_check_dataset(h5_fp, dataset)
   
   if (!is.null(csvdir))
   {

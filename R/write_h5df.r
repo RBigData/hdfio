@@ -157,6 +157,7 @@ write_h5df = function(x, file, dataset, format="column", compression=0)
   format = match.arg(tolower(format), c("column")) # TODO compound
   
   h5_fp = h5file(file, mode="a")
+  h5_check_dataset(h5_fp, dataset)
   
   if (format == "column")
     write_h5df_column(x, 1, h5_fp, dataset)
