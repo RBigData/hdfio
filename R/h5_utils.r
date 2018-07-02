@@ -1,10 +1,3 @@
-glue = function(a, b)
-{
-  paste0(a, "/", b)
-}
-
-
-
 close_and_stop = function(h5_fp, msg)
 {
   h5close(h5_fp)
