@@ -32,9 +32,9 @@ csv2h5_get_strlen = function(file, lens=integer(ncols) - 1L)
     nr = end - skip + 1
     
     if (skip == 1)
-      x = data.table::fread(file, skip=skip-1, nrows=nr, stringsAsFactors=FALSE)
+      x = csv_reader(file, skip=skip-1, nrows=nr, stringsAsFactors=FALSE)
     else
-      x = data.table::fread(file, skip=skip, nrows=nr, stringsAsFactors=FALSE)
+      x = csv_reader(file, skip=skip, nrows=nr, stringsAsFactors=FALSE)
     
     lens = pmax(lens, sapply(x, get_max_str_len))
   }
@@ -87,9 +87,9 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo)
     nr = end - skip + 1
     
     if (skip == 1)
-      x = data.table::fread(file, skip=skip-1, nrows=nr, stringsAsFactors=stringsAsFactors)
+      x = csv_reader(file, skip=skip-1, nrows=nr, stringsAsFactors=stringsAsFactors)
     else
-      x = data.table::fread(file, skip=skip, nrows=nr, stringsAsFactors=stringsAsFactors)
+      x = csv_reader(file, skip=skip, nrows=nr, stringsAsFactors=stringsAsFactors)
     
     writer(x, skip, h5_fp, dataset)
   }

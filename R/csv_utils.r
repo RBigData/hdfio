@@ -5,7 +5,7 @@ csv_nrows = function(csvfile)
 
 csv_ncols = function(csvfile)
 {
-  ncol(data.table::fread(csvfile, nrows=0))
+  ncol(csv_reader(csvfile, nrows=0))
 }
 
 csv_dim = function(csvfile)
@@ -20,7 +20,7 @@ csv_dim = function(csvfile)
 
 csv_colnames = function(csvfile)
 {
-  colnames(data.table::fread(csvfile, nrows=0))
+  colnames(csv_reader(csvfile, nrows=0))
 }
 
 
@@ -29,6 +29,6 @@ csv_colstorage = function(csvfile)
 {
   # TODO try a sampling strategy
   
-  x = data.table::fread(csvfile, nrows=1)
+  x = csv_reader(csvfile, nrows=1)
   sapply(x, storage.mode)
 }
