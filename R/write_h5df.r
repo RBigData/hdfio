@@ -93,6 +93,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, strlens)
     }
   }
   
+  
   for (j in 1:ncol(x))
   {
     nm = paste0("x", j)

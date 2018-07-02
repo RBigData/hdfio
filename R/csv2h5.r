@@ -48,7 +48,7 @@ csv2h5_get_strlen = function(file, lens=integer(ncols) - 1L)
 # writers
 # -----------------------------------------------------------------------------
 
-csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo)
+csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
 {
   if (!isTRUE(yolo))
     csv2h5_validation_dir(files, h5_fp)
@@ -57,10 +57,18 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo)
     writer = write_h5df_column
   
   start_ind = 1
+  verbprint(verbose, "Processing files: \n")
+  
   for (file in files)
   {
-    x = data.table::fread(file, stringsAsFactors=stringsAsFactors)
+    verbprint(verbose, paste0("  ", file, "\n"))
+    verbprint(verbose, "    reading...")
+    
+    x = csv_reader(file, stringsAsFactors=stringsAsFactors)
+    verbprint(verbose, "ok!\n    writing...")
+    
     writer(x, start_ind, h5_fp, dataset)
+    verbprint(verbose, "ok!\n")
     
     start_ind = start_ind + NROW(x)
   }
@@ -68,7 +76,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo)
 
 
 
-csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo)
+csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
 {
   # TODO csv2h5_validation_file
   
@@ -130,7 +138,7 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo)
 #' Invisibly returns \code{TRUE} on success.
 #' 
 #' @export
-csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE)
+csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   if (!is.null(csvdir))
     check.is.string(csvdir)
@@ -146,6 +154,7 @@ csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compres
     stop("argument 'compression' must be an integer in the range 0 to 9")
   check.is.flag(stringsAsFactors)
   check.is.flag(yolo)
+  check.is.flag(verbose)
   
   h5_fp = h5file(h5out, mode="a")
   
@@ -155,10 +164,10 @@ csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compres
     if (length(files) == 0)
       close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
     
-    csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo)
+    csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
   }
   else
-    csv2h5_file(csvfile, h5_fp, dataset, format, stringsAsFactors, yolo)
+    csv2h5_file(csvfile, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
   
   h5close(h5_fp)
 }
