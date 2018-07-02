@@ -1,4 +1,4 @@
-csv2h5_validation_dir = function(files, h5_fp, dataset, format, stringsAsFactors)
+csv2h5_validation_dir = function(files, h5_fp)
 {
   # Validate colnames across csv files
   colnames = csv_colnames(files[1])
@@ -11,25 +11,47 @@ csv2h5_validation_dir = function(files, h5_fp, dataset, format, stringsAsFactors
   
   
   # TODO string size
+  
 }
 
 
 
-csv2h5_validation_file = function()
+csv2h5_get_strlen = function(file, lens=integer(ncols) - 1L)
 {
-  # TODO string size
+  nrows = csv_nrows(file)
+  num_chunks = chunker_numchunks(file)
+  indices = chunker_indices(nrows, num_chunks)
+  
+  ncols = csv_ncols(file)
+  
+  for (i in 1:length(indices))
+  {
+    skip = indices[[i]][1]
+    end = indices[[i]][2]
+    
+    nr = end - skip + 1
+    
+    if (skip == 1)
+      x = data.table::fread(file, skip=skip-1, nrows=nr, stringsAsFactors=FALSE)
+    else
+      x = data.table::fread(file, skip=skip, nrows=nr, stringsAsFactors=FALSE)
+    
+    lens = pmax(lens, sapply(x, get_max_str_len))
+  }
+  
+  lens
 }
 
 
 
 # -----------------------------------------------------------------------------
-# hdfio_column format
+# writers
 # -----------------------------------------------------------------------------
 
-csv2h5_column_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo)
+csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo)
 {
   if (!isTRUE(yolo))
-    csv2h5_validation_dir(files, h5_fp, dataset, format, stringsAsFactors)
+    csv2h5_validation_dir(files, h5_fp)
   
   if (format == "column")
     writer = write_h5df_column
@@ -46,7 +68,7 @@ csv2h5_column_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yo
 
 
 
-csv2h5_column_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo)
+csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo)
 {
   # TODO csv2h5_validation_file
   
@@ -132,10 +154,10 @@ csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compres
     if (length(files) == 0)
       close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
     
-    csv2h5_column_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo)
+    csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo)
   }
   else
-    csv2h5_column_file(csvfile, h5_fp, dataset, format, stringsAsFactors, yolo)
+    csv2h5_file(csvfile, h5_fp, dataset, format, stringsAsFactors, yolo)
   
   h5close(h5_fp)
 }

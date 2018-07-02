@@ -79,7 +79,7 @@ write_string_column = function(x, start_ind, h5_fp, dataset, varname)
 
 
 
-write_h5df_column = function(x, start_ind, h5_fp, dataset)
+write_h5df_column = function(x, start_ind, h5_fp, dataset, strlens)
 {
   if (start_ind == 1)
   {

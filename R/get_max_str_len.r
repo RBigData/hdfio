@@ -11,5 +11,5 @@ get_max_str_len = function(x)
   else if (typeof(x) == "character")
     .Call(R_get_max_str_len, x)
   else
-    stop("'x' must be a character vector or a factor")
+    return(-1L)
 }
