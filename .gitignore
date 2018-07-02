@@ -2,3 +2,8 @@
 *.swp
 
 src/Makevars
+src/*.o
+src/*.so
+
+*.Rhistory
+*.Rproj
