@@ -16,27 +16,33 @@ csv2h5_validation_dir = function(files, h5_fp)
 
 
 
-csv2h5_get_strlen = function(file, lens=integer(ncols) - 1L)
+csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L)
 {
-  nrows = csv_nrows(file)
-  num_chunks = chunker_numchunks(file)
-  indices = chunker_indices(nrows, num_chunks)
-  
-  ncols = csv_ncols(file)
-  
-  for (i in 1:length(indices))
+  for (file in files)
   {
-    skip = indices[[i]][1]
-    end = indices[[i]][2]
+    nrows = csv_nrows(file)
+    num_chunks = chunker_numchunks(file)
+    indices = chunker_indices(nrows, num_chunks)
     
-    nr = end - skip + 1
+    ncols = csv_ncols(file)
     
-    if (skip == 1)
-      x = csv_reader(file, skip=skip-1, nrows=nr, stringsAsFactors=FALSE)
-    else
-      x = csv_reader(file, skip=skip, nrows=nr, stringsAsFactors=FALSE)
-    
-    lens = pmax(lens, sapply(x, get_max_str_len))
+    for (i in 1:length(indices))
+    {
+      skip = indices[[i]][1]
+      end = indices[[i]][2]
+      
+      if (length(indices) == 1L)
+        nr = Inf # needed for multithreaded fread
+      else
+        nr = end - skip + 1
+      
+      if (skip == 1)
+        x = csv_reader(file, skip=skip-1, nrows=nr, stringsAsFactors=FALSE)
+      else
+        x = csv_reader(file, skip=skip, nrows=nr, stringsAsFactors=FALSE)
+      
+      lens = pmax(lens, sapply(x, get_max_str_len))
+    }
   }
   
   lens
@@ -54,7 +60,21 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     csv2h5_validation_dir(files, h5_fp)
   
   if (format == "column")
+  {
+    if (isTRUE(yolo))
+    {
+      verbprint(verbose, "Living dangerously...\n")
+      strlens = NULL
+    }
+    else
+    {
+      verbprint(verbose, "Scanning input files for string info...")
+      strlens = csv2h5_get_strlen(files)
+      verbprint(verbose, "ok!\n")
+    }
+    
     writer = write_h5df_column
+  }
   
   start_ind = 1
   verbprint(verbose, "Processing files: \n")
@@ -67,7 +87,10 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     x = csv_reader(file, stringsAsFactors=stringsAsFactors)
     verbprint(verbose, "ok!\n    writing...")
     
-    writer(x, start_ind, h5_fp, dataset)
+    if (start_ind == 1)
+      types = write_h5df_column_init(x, h5_fp, dataset, strlens=strlens)
+    
+    writer(x, start_ind, h5_fp, dataset, types)
     verbprint(verbose, "ok!\n")
     
     start_ind = start_ind + NROW(x)

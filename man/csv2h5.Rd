@@ -5,7 +5,8 @@
 \title{csv2h5}
 \usage{
 csv2h5(csvfile, csvdir = NULL, h5out, dataset, format = "column",
-  compression = 0, stringsAsFactors = FALSE, yolo = FALSE)
+  compression = 0, stringsAsFactors = FALSE, yolo = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{csvfile}{Input file.}
