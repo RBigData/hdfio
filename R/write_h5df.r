@@ -10,35 +10,6 @@ check_df_cols = function(df)
 
 
 
-write_numeric_column = function(x, start_ind, h5_fp, dataset, varname)
-{
-  h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x
-}
-
-
-
-write_logical_column = write_numeric_column
-
-
-
-write_factor_column = function(x, start_ind, h5_fp, dataset, varname)
-{
-  if (is.character(x))
-    x = factor(x) # TODO grab levels
-  
-  x.int = as.integer(x)
-  
-  h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x.int
-}
-
-
-
-write_string_column = function(x, start_ind, h5_fp, dataset, varname)
-{
-  h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x
-}
-
-
 
 write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
 {
@@ -120,23 +91,18 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
 {
   for (j in 1:ncol(x))
   {
-    nm = paste0("x", j)
+    varname = paste0("x", j)
     col = x[, j]
     
-    if (types[j] == H5_STORAGE_DBL || types[j] == H5_STORAGE_INT)
-      write_column = write_numeric_column
-    else if (types[j] == H5_STORAGE_LGL)
-      write_column = write_logical_column
-    else if (types[j] == H5_STORAGE_STR)
+    if (types[j] == H5_STORAGE_FAC)
     {
-      write_column = write_string_column
-      if (!is.character(col))
-        col = as.character(col)
+      if (is.character(col))
+        col.fac = factor(col) # TODO grab levels
+      
+      col = as.integer(col.fac)
     }
-    else if (types[j] == H5_STORAGE_FAC)
-      write_column = write_factor_column
     
-    write_column(col, start_ind, h5_fp, dataset, nm)
+    h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(col)-1)] = col
   }
 }
 
