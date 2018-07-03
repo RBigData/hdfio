@@ -25,6 +25,8 @@ compression).}
 \item{stringsAsFactors}{TODO}
 
 \item{yolo}{TODO}
+
+\item{verbose}{TODO}
 }
 \value{
 Invisibly returns \code{TRUE} on success.
