@@ -8,10 +8,6 @@ csv2h5_validation_dir = function(files, h5_fp)
     if (!identical(colnames, colnames2))
       close_and_stop(h5_fp, "column names are not the same across files; are they actually mergeable? Re-run with yolo=TRUE to ignore")
   }
-  
-  
-  # TODO string size
-  
 }
 
 
@@ -110,19 +106,31 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
   num_chunks = chunker_numchunks(file)
   indices = chunker_indices(nrows, num_chunks)
   
-  for (i in 1:length(indices))
+  if (isTRUE(yolo))
+    strlens = NULL
+  else
+    strlens = csv2h5_get_strlen(file)
+  
+  n = length(indices)
+  progress_printer(0, n, verbose)
+  for (i in 1:n)
   {
-    skip = indices[[i]][1]
+    progress_printer(i, n, verbose)
+    
+    start_ind = indices[[i]][1]
     end = indices[[i]][2]
     
-    nr = end - skip + 1
+    nr = end - start_ind + 1
     
-    if (skip == 1)
-      x = csv_reader(file, skip=skip-1, nrows=nr, stringsAsFactors=stringsAsFactors)
+    if (start_ind == 1)
+      x = csv_reader(file, skip=start_ind-1, nrows=nr, stringsAsFactors=stringsAsFactors)
     else
-      x = csv_reader(file, skip=skip, nrows=nr, stringsAsFactors=stringsAsFactors)
+      x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
     
-    writer(x, skip, h5_fp, dataset)
+    if (start_ind == 1)
+      types = write_h5df_column_init(x, h5_fp, dataset, strlens=strlens)
+    
+    writer(x, start_ind, h5_fp, dataset, types)
   }
 }
 
