@@ -12,50 +12,21 @@ check_df_cols = function(df)
 
 write_numeric_column = function(x, start_ind, h5_fp, dataset, varname)
 {
-  if (start_ind == 1)
-  {
-    if (typeof(x) == "double")
-      dtype = h5types$H5T_NATIVE_DOUBLE
-    else # int and logical
-      dtype = h5types$H5T_NATIVE_INT
-    
-    dims = H5S$new(dims=length(x), maxdims=Inf)
-    h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
-  }
-  
   h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x
 }
 
 
 
-write_logical_column = function(x, start_ind, h5_fp, dataset, varname)
-{
-  write_numeric_column(x, start_ind, h5_fp, dataset, varname)
-  
-  if (start_ind == 1)
-    h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "logical"
-}
+write_logical_column = write_numeric_column
 
 
 
 write_factor_column = function(x, start_ind, h5_fp, dataset, varname)
 {
   if (is.character(x))
-    x = factor(x)
+    x = factor(x) # TODO grab levels
   
   x.int = as.integer(x)
-  
-  if (start_ind == 1)
-  {
-    dtype = h5types$H5T_NATIVE_INT
-    dims = H5S$new(dims=length(x), maxdims=Inf)
-    h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
-    
-    # TODO merge factor levels on successive writes
-    levels = levels(x)
-    h5attr(h5_fp[[glue(dataset, varname)]], "LEVELS") = levels
-    h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "factor"
-  }
   
   h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x.int
 }
@@ -64,48 +35,108 @@ write_factor_column = function(x, start_ind, h5_fp, dataset, varname)
 
 write_string_column = function(x, start_ind, h5_fp, dataset, varname)
 {
-  # TODO check str len
-  if (start_ind == 1)
-  {
-    len = get_max_str_len(x)
-    str_fixed_len <- H5T_STRING$new(size = len)
-    
-    dims = H5S$new(dims=length(x), maxdims=Inf)
-    h5_fp[[dataset]]$create_dataset(name=varname, dtype=str_fixed_len, space=dims)
-  }
-  
   h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(x)-1)] = x
 }
 
 
 
-write_h5df_column = function(x, start_ind, h5_fp, dataset, strlens)
+write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
 {
-  if (start_ind == 1)
-  {
-    h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_column"
-    h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
-    
-    if (!existsGroup(h5_fp, dataset))
-    {
-      createGroup(h5_fp, dataset)
-      h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
-    }
-  }
+  h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_column"
+  h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
+  
+  createGroup(h5_fp, dataset)
+  h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
+  
+  types = integer(ncol(x))
   
   
   for (j in 1:ncol(x))
   {
+    varname = paste0("x", j)
+    col = x[, j]
+    
+    if (class(col) == "character" || (!is.null(strlens[j]) && strlens[j] > 0))
+    {
+      if (is.null(strlens))
+        len = get_max_str_len(col)
+      else
+        len = strlens[j]
+      
+      str_fixed_len = H5T_STRING$new(size = len)
+      
+      dims = H5S$new(dims=length(col), maxdims=Inf)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=str_fixed_len, space=dims)
+      
+      types[j] = H5_STORAGE_STR
+    }
+    else if (class(col) == "numeric" || class(col) == "integer")
+    {
+      if (typeof(col) == "double")
+      {
+        dtype = h5types$H5T_NATIVE_DOUBLE
+        types[j] = H5_STORAGE_DBL
+      }
+      else
+      {
+        dtype = h5types$H5T_NATIVE_INT
+        types[j] = H5_STORAGE_INT
+      }
+      
+      dims = H5S$new(dims=length(col), maxdims=Inf)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
+    }
+    else if (class(col) == "logical")
+    {
+      dtype = H5T_LOGICAL$new()
+      types[j] = H5_STORAGE_LGL
+      
+      dims = H5S$new(dims=length(col), maxdims=Inf)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
+      
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "logical"
+    }
+    else if (class(col) == "factor")
+    {
+      dtype = h5types$H5T_NATIVE_INT
+      types[j] = H5_STORAGE_FAC
+      
+      dims = H5S$new(dims=length(col), maxdims=Inf)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
+      
+      # TODO merge factor levels on successive writes?
+      levels = levels(col)
+      h5attr(h5_fp[[glue(dataset, varname)]], "LEVELS") = levels
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "factor"
+    }
+  }
+  
+  types
+}
+
+
+
+write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
+{
+  for (j in 1:ncol(x))
+  {
     nm = paste0("x", j)
     col = x[, j]
-    if (class(col) == "numeric" || class(col) == "integer")
-      write_numeric_column(col, start_ind, h5_fp, dataset, nm)
-    else if (class(col) == "logical")
-      write_logical_column(col, start_ind, h5_fp, dataset, nm)
-    else if (class(col) == "factor")
-      write_factor_column(col, start_ind, h5_fp, dataset, nm)
-    else if (class(col) == "character")
-      write_string_column(col, start_ind, h5_fp, dataset, nm)
+    
+    if (types[j] == H5_STORAGE_DBL || types[j] == H5_STORAGE_INT)
+      write_column = write_numeric_column
+    else if (types[j] == H5_STORAGE_LGL)
+      write_column = write_logical_column
+    else if (types[j] == H5_STORAGE_STR)
+    {
+      write_column = write_string_column
+      if (!is.character(col))
+        col = as.character(col)
+    }
+    else if (types[j] == H5_STORAGE_FAC)
+      write_column = write_factor_column
+    
+    write_column(col, start_ind, h5_fp, dataset, nm)
   }
 }
 
@@ -160,7 +191,10 @@ write_h5df = function(x, file, dataset, format="column", compression=0)
   h5_check_dataset(h5_fp, dataset)
   
   if (format == "column")
-    write_h5df_column(x, 1, h5_fp, dataset)
+  {
+    types = write_h5df_column_init(x, h5_fp, dataset, strlens=NULL)
+    write_h5df_column(x, 1, h5_fp, dataset, types)
+  }
   
   h5close(h5_fp)
 }
