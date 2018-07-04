@@ -60,3 +60,16 @@ progress_printer = function(i, n, verbose)
   if (i == n)
     cat("\n")
 }
+
+
+
+check.file = function(file, h5=FALSE)
+{
+  if (!file.exists(file))
+    stop("file does not exist")
+  
+  if (isTRUE(h5) && !is.h5file(file))
+    stop("file is not a valid HDF5 file")
+  
+  invisible(TRUE)
+}
