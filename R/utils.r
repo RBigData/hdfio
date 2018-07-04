@@ -17,7 +17,7 @@ verbprint = function(verbose, msg)
 
 csv_reader = function(file, skip="__auto__", nrows=Inf, stringsAsFactors=FALSE, ...)
 {
-  data.table::fread(file=file, skip=skip, nrows=nrows, stringsAsFactors=stringsAsFactors, verbose=FALSE, data.table=FALSE, ...)
+  data.table::fread(file=file, skip=skip, nrows=nrows, stringsAsFactors=stringsAsFactors, verbose=FALSE, showProgress=FALSE, data.table=FALSE, ...)
 }
 
 
