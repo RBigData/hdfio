@@ -11,7 +11,7 @@ check_df_cols = function(df)
 
 
 
-write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
+write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
 {
   h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_column"
   h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
@@ -37,7 +37,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
       str_fixed_len = H5T_STRING$new(size = len)
       
       dims = H5S$new(dims=length(col), maxdims=Inf)
-      h5_fp[[dataset]]$create_dataset(name=varname, dtype=str_fixed_len, space=dims)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=str_fixed_len, space=dims, gzip_level=compression)
       
       types[j] = H5_STORAGE_STR
     }
@@ -55,7 +55,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
       }
       
       dims = H5S$new(dims=length(col), maxdims=Inf)
-      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
     }
     else if (class(col) == "logical")
     {
@@ -63,7 +63,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
       types[j] = H5_STORAGE_LGL
       
       dims = H5S$new(dims=length(col), maxdims=Inf)
-      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
       
       h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "logical"
     }
@@ -73,7 +73,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL)
       types[j] = H5_STORAGE_FAC
       
       dims = H5S$new(dims=length(col), maxdims=Inf)
-      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
       
       # TODO merge factor levels on successive writes?
       levels = levels(col)
@@ -163,7 +163,7 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=0)
   
   if (format == "column")
   {
-    types = write_h5df_column_init(x, h5_fp, dataset, strlens=NULL)
+    types = write_h5df_column_init(x, h5_fp, dataset, strlens=NULL, compression=compression)
     write_h5df_column(x, 1, h5_fp, dataset, types)
   }
   
