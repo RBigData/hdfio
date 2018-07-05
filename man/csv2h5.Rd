@@ -2,17 +2,17 @@
 % Please edit documentation in R/csv2h5.r
 \name{csv2h5}
 \alias{csv2h5}
+\alias{csv2h5}
+\alias{dir2h5}
 \title{csv2h5}
 \usage{
-csv2h5(csvfile, csvdir = NULL, h5out, dataset, format = "column",
-  compression = 0, stringsAsFactors = FALSE, yolo = FALSE,
-  verbose = FALSE)
+csv2h5(file, h5out, dataset = NULL, format = "column", compression = 0,
+  stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
+
+dir2h5(csvdir, h5out, dataset = NULL, format = "column", compression = 0,
+  stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
 }
 \arguments{
-\item{csvfile}{Input file.}
-
-\item{csvdir}{TODO}
-
 \item{h5out}{Output file.}
 
 \item{dataset}{TODO}
@@ -27,14 +27,17 @@ compression).}
 \item{yolo}{TODO}
 
 \item{verbose}{TODO}
+
+\item{csvdir}{TODO}
+
+\item{csvfile}{Input file.}
 }
 \value{
 Invisibly returns \code{TRUE} on success.
 }
 \description{
-Convert a csv to HDF5 dataset.
+Convert a csv file or a directory of csv files to HDF5 dataset.
 }
 \details{
 TODO
 }
-

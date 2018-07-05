@@ -145,7 +145,7 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 
 #' csv2h5
 #' 
-#' Convert a csv to HDF5 dataset.
+#' Convert a csv file or a directory of csv files to HDF5 dataset.
 #' 
 #' @details
 #' TODO
@@ -173,19 +173,25 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @return
 #' Invisibly returns \code{TRUE} on success.
 #' 
+#' @name csv2h5
+#' @rdname csv2h5
+NULL
+
+
+
+#' @rdname csv2h5
 #' @export
-csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
-  if (!is.null(csvdir))
-    check.is.string(csvdir)
-  else
-    check.is.string(csvfile)
-  
+  check.is.string(file)
+  check.file(file)
   check.is.string(h5out)
-  check.is.string(dataset)
+  if (!is.null(dataset))
+    check.is.string(dataset)
+  else
+    dataset = deparse(substitute(x))
   format = match.arg(tolower(format), c("column")) # TODO compound
   check.is.natnum(compression)
-  compression = as.integer(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
   check.is.flag(stringsAsFactors)
@@ -195,16 +201,38 @@ csv2h5 = function(csvfile, csvdir=NULL, h5out, dataset, format="column", compres
   h5_fp = h5file(h5out, mode="a")
   h5_check_dataset(h5_fp, dataset)
   
-  if (!is.null(csvdir))
-  {
-    files = dir(csvdir, pattern="*.csv", full.names=TRUE)
-    if (length(files) == 0)
-      close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
-    
-    csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
-  }
-  else
-    csv2h5_file(csvfile, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+  csv2h5_file(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+  
+  h5close(h5_fp)
+}
+
+
+
+#' @rdname csv2h5
+#' @export
+dir2h5 = function(csvdir, h5out, dataset=NULL, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+{
+  check.is.string(csvdir)
+  check.is.string(h5out)
+  check.is.string(dataset)
+  format = match.arg(tolower(format), c("column")) # TODO compound
+  check.is.natnum(compression)
+  if (compression > 9 || compression < 0)
+    stop("argument 'compression' must be an integer in the range 0 to 9")
+  check.is.flag(stringsAsFactors)
+  check.is.flag(yolo)
+  check.is.flag(verbose)
+  
+  h5_fp = h5file(h5out, mode="a")
+  h5_check_dataset(h5_fp, dataset)
+  
+  files = dir(csvdir, pattern="*.csv", full.names=TRUE, ignore.case=TRUE)
+  if (length(files) == 0)
+    close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
+  
+  csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+  
+  # TODO multi-dataset conversion
   
   h5close(h5_fp)
 }
