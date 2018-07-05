@@ -37,4 +37,3 @@ df
 \seealso{
 \code{\link{write_h5df}}
 }
-

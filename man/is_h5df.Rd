@@ -34,4 +34,3 @@ is_h5df(f, "mydata")
 \seealso{
 \code{\link{is_h5df}}
 }
-

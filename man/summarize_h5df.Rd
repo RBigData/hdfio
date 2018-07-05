@@ -25,4 +25,3 @@ h5in = system.file("exampledata/pytables_table.h5", package="hdfio")
 summarize_h5df(h5in)
 
 }
-

@@ -4,7 +4,7 @@
 \alias{write_h5df}
 \title{write_h5df}
 \usage{
-write_h5df(x, file, dataset, format = "column", compression = 0)
+write_h5df(x, file, dataset = NULL, format = "column", compression = 0)
 }
 \arguments{
 \item{x}{Input dataset (dataframe or datatable)}
@@ -32,4 +32,3 @@ library(hdfio)
 \seealso{
 \code{\link{read_h5df}}
 }
-
