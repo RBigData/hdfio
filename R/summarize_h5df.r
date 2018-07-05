@@ -1,3 +1,18 @@
+summarize_dataset = function(h5_fp, dataset, colnames)
+{
+  format = h5_detect_format(h5_fp, dataset)
+  dim = h5_dim(h5_fp, dataset)
+  
+  if (format == "hdfio_column" && isTRUE(colnames))
+    cn = h5_colnames(h5_fp, dataset)
+  else
+    cn = NULL
+  
+  list(dataset=dataset, format=format, dim=dim, colnames=cn)
+}
+
+
+
 #' summarize_h5df
 #' 
 #' TODO
@@ -26,17 +41,17 @@ summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)
   check.is.flag(colnames)
   
   h5_fp = h5file(h5in, mode="r")
-  dataset = h5_get_dataset(h5_fp, dataset)
+  
+  if (is.null(dataset))
+  {
+    datasets = list.groups(h5_fp)
+    datasets_summary = lapply(datasets, summarize_dataset, h5_fp=h5_fp, colnames=colnames)
+  }
+  else
+    datasets_summary = summarize_dataset(h5_fp, dataset)
   
   name = h5_fp$get_filename()
   file_size = memuse::Sys.filesize(h5in)
-  fmt = h5_detect_format(h5_fp, dataset)
-  dim = h5_dim(h5_fp, dataset)
-  
-  if (fmt == "hdfio_column" && isTRUE(colnames))
-    colnames = h5_colnames(h5_fp, dataset)
-  else
-    colnames = NULL
   
   h5close(h5_fp)
   
@@ -44,9 +59,7 @@ summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)
     name = name,
     dataset = dataset,
     file_size = file_size,
-    format = fmt,
-    dim = dim,
-    colnames = colnames
+    datasets_summary = datasets_summary
   )
   
   class(ret) = "summary_h5df"
@@ -67,14 +80,19 @@ print.summary_h5df = function(x, ...)
 {
   cat("Filename:   ", x$name, "\n")
   cat("File size:  ", as.character(x$file_size), "\n")
-  cat("Dataset:    ", x$dataset, "\n")
-  cat("Format:     ", x$format, "\n")
-  if (x$format != "unknown")
-    cat("Dimensions: ", x$dim[1], "x", x$dim[2], "\n")
-  if (!is.null(x$colnames))
+  cat("Datasets:\n")
+  
+  for (ds in x$datasets_summary)
   {
-    num = 1:length(x$colnames)
-    cat("Columns:    ", "\n", paste0("    ", num, ". ", x$colnames, "\n"))
+    cat("   ", ds$dataset, "\n")
+    cat("        Format:    ", ds$format, "\n")
+    if (ds$format != "unknown")
+      cat("        Dimensions:", ds$dim[1], "x", ds$dim[2], "\n")
+    if (!is.null(ds$colnames))
+    {
+      num = 1:length(ds$colnames)
+      cat("        Columns:    ", "\n", paste0("           ", num, ". ", ds$colnames, "\n"))
+    }
   }
   
   invisible()
