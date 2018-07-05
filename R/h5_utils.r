@@ -119,3 +119,15 @@ h5_colnames = function(h5_fp, dataset)
   else
     stop("unknown format")
 }
+
+
+
+h5_list_datasets = function(h5_fp, dataset)
+{
+  datasets = list.groups(h5_fp)
+  drop = grep("_i_table", datasets)
+  if (length(drop) > 0)
+    datasets[-drop]
+  else
+    datasets
+}
