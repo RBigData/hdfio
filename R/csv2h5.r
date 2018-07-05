@@ -150,7 +150,7 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @details
 #' TODO
 #' 
-#' @param csvfile
+#' @param file
 #' Input file.
 #' @param csvdir
 #' TODO

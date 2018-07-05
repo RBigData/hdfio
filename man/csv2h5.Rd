@@ -13,6 +13,8 @@ dir2h5(csvdir, h5out, dataset = NULL, format = "column", compression = 0,
   stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
 }
 \arguments{
+\item{file}{Input file.}
+
 \item{h5out}{Output file.}
 
 \item{dataset}{TODO}
@@ -29,8 +31,6 @@ compression).}
 \item{verbose}{TODO}
 
 \item{csvdir}{TODO}
-
-\item{csvfile}{Input file.}
 }
 \value{
 Invisibly returns \code{TRUE} on success.
