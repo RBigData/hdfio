@@ -36,7 +36,7 @@ chunker_numchunks = function(file)
   if (inherits(check, "simpleError"))
     ram = memuse::mu(1, "gib")
   else
-    ram = .95*ram
+    ram = .65*ram
   
   # ram = memuse::mu(10, "mib") # for testing
   
