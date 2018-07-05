@@ -101,6 +101,11 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
       
       col = as.integer(col.fac)
     }
+    else if (types[j] == H5_STORAGE_STR)
+    {
+      if (!is.character(col))
+        col = as.character(col)
+    }
     
     h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(col)-1)] = col
   }
