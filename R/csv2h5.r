@@ -50,27 +50,31 @@ csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L)
 # writers
 # -----------------------------------------------------------------------------
 
-csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
 {
-  if (!isTRUE(yolo))
-    csv2h5_validation_dir(files, h5_fp)
-  
   if (format == "column")
   {
-    if (isTRUE(yolo))
-    {
-      verbprint(verbose, "Living dangerously...\n")
-      strlens = NULL
-    }
-    else
-    {
-      verbprint(verbose, "Scanning all input files for storage info...")
-      strlens = csv2h5_get_strlen(files)
-      verbprint(verbose, "ok!\n")
-    }
-    
     writer = write_h5df_column
+    writer_init = write_h5df_column_init
   }
+  
+  
+  if (isTRUE(yolo))
+  {
+    verbprint(verbose, "Living dangerously...\n")
+    strlens = NULL
+  }
+  else
+  {
+    verbprint(verbose, "Checking input files for common header lines...")
+    csv2h5_validation_dir(files, h5_fp)
+    verbprint(verbose, "ok!\n")
+    
+    verbprint(verbose, "Scanning all input files for storage info...")
+    strlens = csv2h5_get_strlen(files)
+    verbprint(verbose, "ok!\n")
+  }
+  
   
   start_ind = 1
   
@@ -84,7 +88,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     x = csv_reader(file, stringsAsFactors=stringsAsFactors)
     
     if (start_ind == 1)
-      types = write_h5df_column_init(x, h5_fp, dataset, strlens=strlens)
+      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
     
     verbprint(verbose, "ok! writing...")
     writer(x, start_ind, h5_fp, dataset, types)
@@ -100,10 +104,13 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 
 
 
-csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
 {
   if (format == "column")
+  {
     writer = write_h5df_column
+    writer_init = write_h5df_column_init
+  }
   
   nrows = csv_nrows(file)
   num_chunks = chunker_numchunks(file)
@@ -131,7 +138,7 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
       x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
     
     if (start_ind == 1)
-      types = write_h5df_column_init(x, h5_fp, dataset, strlens=strlens)
+      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
     
     writer(x, start_ind, h5_fp, dataset, types)
   }
@@ -201,7 +208,7 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=0, str
   h5_fp = h5file(h5out, mode="a")
   h5_check_dataset(h5_fp, dataset)
   
-  csv2h5_file(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+  csv2h5_file(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
   
   h5close(h5_fp)
 }
@@ -230,7 +237,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, format="column", compression=0, s
   if (length(files) == 0)
     close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
   
-  csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
+  csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
   
   # TODO multi-dataset conversion
   
