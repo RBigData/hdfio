@@ -1,9 +1,12 @@
 summarize_dataset = function(h5_fp, dataset, colnames)
 {
   format = h5_detect_format(h5_fp, dataset)
+  if (format == "unknown")
+    return(list(dataset=dataset, format=format, dim=NULL, colnames=NULL))
+  
   dim = h5_dim(h5_fp, dataset)
   
-  if (format == "hdfio_column" && isTRUE(colnames))
+  if (isTRUE(colnames))
     cn = h5_colnames(h5_fp, dataset)
   else
     cn = NULL
@@ -44,7 +47,7 @@ summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)
   
   if (is.null(dataset))
   {
-    datasets = list.groups(h5_fp)
+    datasets = h5_list_datasets(h5_fp, dataset)
     datasets_summary = lapply(datasets, summarize_dataset, h5_fp=h5_fp, colnames=colnames)
   }
   else
