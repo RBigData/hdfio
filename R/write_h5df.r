@@ -140,23 +140,23 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
 #' \code{\link{read_h5df}}
 #' 
 #' @export
-write_h5df = function(x, file, dataset, format="column", compression=0)
+write_h5df = function(x, file, dataset=NULL, format="column", compression=0)
 {
-  if (data.table::is.data.table(x))
-    data.table::setDF(x)
-  else if (!is.data.frame(x))
-    stop("argument 'x' must be a data.frame or data.table object")
-  
-  check_df_cols(x)
-  
   check.is.string(file)
-  check.is.string(dataset)
+  if (!is.null(dataset))
+    check.is.string(dataset)
+  else
+    dataset = deparse(substitute(x))
   check.is.string(format)
   check.is.natnum(compression)
   if (compression > 9)
     stop("argument 'compression' must be an integer from 0 to 9 (inclusive)")
-  
   format = match.arg(tolower(format), c("column")) # TODO compound
+  if (data.table::is.data.table(x))
+    data.table::setDF(x)
+  else if (!is.data.frame(x))
+    stop("argument 'x' must be a data.frame or data.table object")
+  check_df_cols(x)
   
   h5_fp = h5file(file, mode="a")
   h5_check_dataset(h5_fp, dataset)
