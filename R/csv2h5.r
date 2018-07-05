@@ -64,7 +64,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     }
     else
     {
-      verbprint(verbose, "Scanning input files for string info...")
+      verbprint(verbose, "Scanning all input files for storage info...")
       strlens = csv2h5_get_strlen(files)
       verbprint(verbose, "ok!\n")
     }
@@ -73,32 +73,35 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
   }
   
   start_ind = 1
-  verbprint(verbose, "Processing files: \n")
   
+  n = length(files)
+  verbprint(verbose, paste("Processing", length(files), "files:\n"))
   for (file in files)
   {
-    verbprint(verbose, paste0("  ", file, "\n"))
-    verbprint(verbose, "    reading...")
+    verbprint(verbose, paste0("    ", file, ": reading..."))
+    # TODO batch process csv files?
     
     x = csv_reader(file, stringsAsFactors=stringsAsFactors)
-    verbprint(verbose, "ok!\n    writing...")
     
     if (start_ind == 1)
       types = write_h5df_column_init(x, h5_fp, dataset, strlens=strlens)
     
+    verbprint(verbose, "ok! writing...")
     writer(x, start_ind, h5_fp, dataset, types)
     verbprint(verbose, "ok!\n")
     
     start_ind = start_ind + NROW(x)
   }
+  
+  verbprint(verbose, "done!")
+  
+  invisible(TRUE)
 }
 
 
 
 csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose)
 {
-  # TODO csv2h5_validation_file
-  
   if (format == "column")
     writer = write_h5df_column
   

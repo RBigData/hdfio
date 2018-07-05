@@ -180,6 +180,7 @@ read_pytables_table = function(h5_fp, dataset, rows)
 read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, verbose=FALSE)
 {
   check.is.string(h5in)
+  check.file(h5in, h5=TRUE)
   check.is.flag(strings)
   check.is.flag(verbose)
   if (!is.null(dataset))
