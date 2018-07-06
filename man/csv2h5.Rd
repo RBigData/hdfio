@@ -9,8 +9,9 @@
 csv2h5(file, h5out, dataset = NULL, format = "column", compression = 0,
   stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
 
-dir2h5(csvdir, h5out, dataset = NULL, format = "column", compression = 0,
-  stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
+dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
+  compression = 0, stringsAsFactors = FALSE, yolo = FALSE,
+  verbose = FALSE)
 }
 \arguments{
 \item{file}{Input file.}
@@ -31,6 +32,8 @@ compression).}
 \item{verbose}{TODO}
 
 \item{csvdir}{TODO}
+
+\item{combined}{TODO}
 }
 \value{
 Invisibly returns \code{TRUE} on success.

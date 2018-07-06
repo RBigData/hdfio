@@ -176,6 +176,8 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' TODO
 #' @param verbose
 #' TODO
+#' @param combined
+#' TODO
 #' 
 #' @return
 #' Invisibly returns \code{TRUE} on success.
