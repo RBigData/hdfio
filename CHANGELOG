@@ -1,3 +1,6 @@
 Release 0.1-0:
   * Added is_h5df().
   * Added read_h5df().
+  * Added write_h5df().
+  * Added csv2h5().
+  * Added dir2h5().
