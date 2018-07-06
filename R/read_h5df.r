@@ -7,9 +7,9 @@ read_atomic_column = function(h5_fp, dataset, varname, rows)
   ds = glue(dataset, varname)
   
   if (is.null(rows))
-    h5_fp[[ds]][]
+    h5_fp[[ds]]$read(NULL)
   else
-    h5_fp[[ds]][rows]
+    h5_fp[[ds]]$read(list(rows))
 }
 
 
