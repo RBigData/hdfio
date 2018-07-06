@@ -70,6 +70,11 @@ read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
       x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
       class(x[[j]]) = "logical"
     }
+    else if (class == "date")
+    {
+      col = read_atomic_column(h5_fp, dataset, nm, rows)
+      x[[j]] = as.POSIXct(col, origin="1970-01-01 00:00.00 UTC")
+    }
     else if (class == "factor")
       x[[j]] = read_factor_column(h5_fp, dataset, nm, rows)
     else

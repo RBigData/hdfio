@@ -2,9 +2,9 @@ check_df_cols = function(df)
 {
   for (j in 1:NCOL(df))
   {
-    type = class(df[, j])
-    if (type != "numeric" && type != "integer" && type != "logical" && type != "character" && type != "factor")
-      stop("dataframe includes non-atomic/non-factor type")
+    type = class(df[, j])[1]
+    if (type != "numeric" && type != "integer" && type != "logical" && type != "character" && type != "factor" && type != "POSIXct" && type != "POSIXt")
+      stop("dataframe includes non-atomic/non-factor/non-date type")
   }
 }
 
@@ -26,8 +26,9 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
   {
     varname = paste0("x", j)
     col = x[, j]
+    class = class(col)[1]
     
-    if (class(col) == "character" || (!is.null(strlens[j]) && strlens[j] > 0))
+    if (class == "character" || (!is.null(strlens[j]) && strlens[j] > 0))
     {
       if (is.null(strlens))
         len = get_max_str_len(col)
@@ -41,7 +42,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       
       types[j] = H5_STORAGE_STR
     }
-    else if (class(col) == "numeric" || class(col) == "integer")
+    else if (class == "numeric" || class == "integer")
     {
       if (typeof(col) == "double")
       {
@@ -57,7 +58,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       dims = H5S$new(dims=length(col), maxdims=Inf)
       h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
     }
-    else if (class(col) == "logical")
+    else if (class == "logical")
     {
       dtype = H5T_LOGICAL$new()
       types[j] = H5_STORAGE_LGL
@@ -67,7 +68,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       
       h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "logical"
     }
-    else if (class(col) == "factor")
+    else if (class == "factor")
     {
       dtype = h5types$H5T_NATIVE_INT
       types[j] = H5_STORAGE_FAC
@@ -80,6 +81,18 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       h5attr(h5_fp[[glue(dataset, varname)]], "LEVELS") = levels
       h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "factor"
     }
+    else if (inherits(col, "POSIXct"))
+    {
+      dtype = h5types$H5T_NATIVE_DOUBLE
+      types[j] = H5_STORAGE_DATE
+      
+      dims = H5S$new(dims=length(col), maxdims=Inf)
+      h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
+      
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "date"
+    }
+    else
+      close_and_stop(h5_fp, INTERNAL_ERROR)
   }
   
   types
@@ -106,6 +119,8 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
       if (!is.character(col))
         col = as.character(col)
     }
+    else if (types[j] == H5_STORAGE_DATE)
+      col = as.double(col)
     
     h5_fp[[glue(dataset, varname)]][start_ind : (start_ind+length(col)-1)] = col
   }
