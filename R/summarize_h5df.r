@@ -51,7 +51,7 @@ summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)
     datasets_summary = lapply(datasets, summarize_dataset, h5_fp=h5_fp, colnames=colnames)
   }
   else
-    datasets_summary = summarize_dataset(h5_fp, dataset)
+    datasets_summary = list(summarize_dataset(h5_fp, dataset, colnames))
   
   name = h5_fp$get_filename()
   file_size = memuse::Sys.filesize(h5in)
