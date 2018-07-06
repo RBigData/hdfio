@@ -65,17 +65,24 @@ read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
     
     if (length(class) == 0)
       x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
-    else if (class == "logical")
+    else if (class == H5_STORAGE_STR)
+    {
+      col = read_atomic_column(h5_fp, dataset, nm, rows)
+      col[col == "NA"] = NA_character_
+      
+      x[[j]] = col
+    }
+    else if (class == H5_STORAGE_LGL)
     {
       x[[j]] = read_atomic_column(h5_fp, dataset, nm, rows)
       class(x[[j]]) = "logical"
     }
-    else if (class == "date")
+    else if (class == H5_STORAGE_DATE)
     {
       col = read_atomic_column(h5_fp, dataset, nm, rows)
       x[[j]] = as.POSIXct(col, origin="1970-01-01 00:00.00 UTC")
     }
-    else if (class == "factor")
+    else if (class == H5_STORAGE_FAC)
       x[[j]] = read_factor_column(h5_fp, dataset, nm, rows)
     else
       close_and_stop(h5_fp, INTERNAL_ERROR)

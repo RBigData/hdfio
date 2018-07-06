@@ -41,6 +41,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       h5_fp[[dataset]]$create_dataset(name=varname, dtype=str_fixed_len, space=dims, gzip_level=compression)
       
       types[j] = H5_STORAGE_STR
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = H5_STORAGE_STR
     }
     else if (class == "numeric" || class == "integer")
     {
@@ -66,7 +67,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       dims = H5S$new(dims=length(col), maxdims=Inf)
       h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
       
-      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "logical"
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = H5_STORAGE_LGL
     }
     else if (class == "factor")
     {
@@ -79,7 +80,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       # TODO merge factor levels on successive writes?
       levels = levels(col)
       h5attr(h5_fp[[glue(dataset, varname)]], "LEVELS") = levels
-      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "factor"
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = H5_STORAGE_FAC
     }
     else if (inherits(col, "POSIXct"))
     {
@@ -89,7 +90,7 @@ write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
       dims = H5S$new(dims=length(col), maxdims=Inf)
       h5_fp[[dataset]]$create_dataset(name=varname, dtype=dtype, space=dims, gzip_level=compression)
       
-      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = "date"
+      h5attr(h5_fp[[glue(dataset, varname)]], "CLASS") = H5_STORAGE_DATE
     }
     else
       close_and_stop(h5_fp, INTERNAL_ERROR)
