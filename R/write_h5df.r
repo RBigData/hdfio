@@ -169,6 +169,8 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=0)
   format = match.arg(tolower(format), c("column")) # TODO compound
   if (data.table::is.data.table(x))
     data.table::setDF(x)
+  else if (inherits(x, "tbl_df"))
+    class(x) = "data.frame"
   else if (!is.data.frame(x))
     stop("argument 'x' must be a data.frame or data.table object")
   check_df_cols(x)
