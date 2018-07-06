@@ -97,7 +97,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     start_ind = start_ind + NROW(x)
   }
   
-  verbprint(verbose, "done!")
+  verbprint(verbose, "done!\n")
   
   invisible(TRUE)
 }
