@@ -196,7 +196,7 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=0, str
   if (!is.null(dataset))
     check.is.string(dataset)
   else
-    dataset = deparse(substitute(x))
+    dataset = h5_infer_dataset(file)
   format = match.arg(tolower(format), c("column")) # TODO compound
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
@@ -217,11 +217,13 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=0, str
 
 #' @rdname csv2h5
 #' @export
-dir2h5 = function(csvdir, h5out, dataset=NULL, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   check.is.string(csvdir)
   check.is.string(h5out)
-  check.is.string(dataset)
+  if (!is.null(dataset))
+    check.is.string(dataset)
+  check.is.flag(combined)
   format = match.arg(tolower(format), c("column")) # TODO compound
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
@@ -230,16 +232,35 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, format="column", compression=0, s
   check.is.flag(yolo)
   check.is.flag(verbose)
   
+  
   h5_fp = h5file(h5out, mode="a")
-  h5_check_dataset(h5_fp, dataset)
+  
+  if (is.null(dataset))
+  {
+    if (isTRUE(combined))
+    {
+      dataset = h5_infer_dataset(csvdir, dir=TRUE)
+      h5_check_dataset(h5_fp, dataset)
+    }
+  }
   
   files = dir(csvdir, pattern="*.csv", full.names=TRUE, ignore.case=TRUE)
   if (length(files) == 0)
     close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
   
-  csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+  if (isTRUE(combined))
+    csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+  else
+  {
+    verbprint(verbose, paste("Processing", length(files), "files:\n"))
+    for (file in files)
+    {
+      verbprint(verbose, paste0("    ", file, " "))
+      dataset = h5_infer_dataset(file)
+      csv2h5_file(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+    }
+  }
   
-  # TODO multi-dataset conversion
   
   h5close(h5_fp)
 }
