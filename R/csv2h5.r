@@ -50,6 +50,48 @@ csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L)
 # writers
 # -----------------------------------------------------------------------------
 
+csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+{
+  if (format == "column")
+  {
+    writer = write_h5df_column
+    writer_init = write_h5df_column_init
+  }
+  
+  nrows = csv_nrows(file)
+  num_chunks = chunker_numchunks(file)
+  indices = chunker_indices(nrows, num_chunks)
+  
+  if (isTRUE(yolo))
+    strlens = NULL
+  else
+    strlens = csv2h5_get_strlen(file)
+  
+  n = length(indices)
+  progress_printer(0, n, verbose)
+  for (i in 1:n)
+  {
+    progress_printer(i, n, verbose)
+    
+    start_ind = indices[[i]][1]
+    end = indices[[i]][2]
+    
+    nr = end - start_ind + 1
+    
+    if (start_ind == 1)
+      x = csv_reader(file, skip=start_ind-1, nrows=nr, stringsAsFactors=stringsAsFactors)
+    else
+      x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
+    
+    if (start_ind == 1)
+      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+    
+    writer(x, start_ind, h5_fp, dataset, types)
+  }
+}
+
+
+
 csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
 {
   if (format == "column")
@@ -100,48 +142,6 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
   verbprint(verbose, "done!\n")
   
   invisible(TRUE)
-}
-
-
-
-csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
-{
-  if (format == "column")
-  {
-    writer = write_h5df_column
-    writer_init = write_h5df_column_init
-  }
-  
-  nrows = csv_nrows(file)
-  num_chunks = chunker_numchunks(file)
-  indices = chunker_indices(nrows, num_chunks)
-  
-  if (isTRUE(yolo))
-    strlens = NULL
-  else
-    strlens = csv2h5_get_strlen(file)
-  
-  n = length(indices)
-  progress_printer(0, n, verbose)
-  for (i in 1:n)
-  {
-    progress_printer(i, n, verbose)
-    
-    start_ind = indices[[i]][1]
-    end = indices[[i]][2]
-    
-    nr = end - start_ind + 1
-    
-    if (start_ind == 1)
-      x = csv_reader(file, skip=start_ind-1, nrows=nr, stringsAsFactors=stringsAsFactors)
-    else
-      x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
-    
-    if (start_ind == 1)
-      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
-    
-    writer(x, start_ind, h5_fp, dataset, types)
-  }
 }
 
 
