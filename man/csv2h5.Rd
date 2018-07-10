@@ -6,11 +6,11 @@
 \alias{dir2h5}
 \title{csv2h5}
 \usage{
-csv2h5(file, h5out, dataset = NULL, format = "column", compression = 0,
+csv2h5(file, h5out, dataset = NULL, format = "column", compression = 4,
   stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
 
 dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
-  compression = 0, stringsAsFactors = FALSE, yolo = FALSE,
+  compression = 4, stringsAsFactors = FALSE, yolo = FALSE,
   verbose = FALSE)
 }
 \arguments{
