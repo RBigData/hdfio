@@ -156,7 +156,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
 #' \code{\link{read_h5df}}
 #' 
 #' @export
-write_h5df = function(x, file, dataset=NULL, format="column", compression=0)
+write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
 {
   check.is.string(file)
   if (!is.null(dataset))

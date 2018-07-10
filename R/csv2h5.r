@@ -190,7 +190,7 @@ NULL
 
 #' @rdname csv2h5
 #' @export
-csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   check.is.string(file)
   check.file(file)
@@ -219,7 +219,7 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=0, str
 
 #' @rdname csv2h5
 #' @export
-dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=0, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   check.is.string(csvdir)
   check.is.string(h5out)

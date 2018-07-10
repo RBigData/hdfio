@@ -73,7 +73,7 @@ We can also get a quick summary of the dataset:
 ```r
 summarize_h5df("/tmp/airlines.h5")
 ## Filename:    /tmp/airlines.h5 
-## File size:   108.464 MiB 
+## File size:   10.710 MiB 
 ## Datasets:
 ##     airlines1987 
 ##         Format:     hdfio_column 
@@ -107,7 +107,7 @@ Although `summarize_h5df()` will show all datasets by default, but we can specif
 ```r
 summarize_h5df("/tmp/airlines.h5")
 ## Filename:    /tmp/airlines.h5 
-## File size:   537.923 MiB 
+## File size:   52.090 MiB 
 ## Datasets:
 ##     airlines1987 
 ##         Format:     hdfio_column 
@@ -118,7 +118,7 @@ summarize_h5df("/tmp/airlines.h5")
 
 summarize_h5df("/tmp/airlines.h5", "airlines1988", colnames=TRUE)
 ## Filename:    /tmp/airlines.h5 
-## File size:   537.923 MiB 
+## File size:   52.090 MiB 
 ## Datasets:
 ##     airlines1988 
 ##         Format:     hdfio_column 
@@ -167,7 +167,7 @@ As the output implies, the function will process the csv file in batches if the 
 ```r
 summarize_h5df("/tmp/airlines1995.h5")
 ## Filename:    /tmp/airlines1995.h5 
-## File size:   490.840 MiB 
+## File size:   66.188 MiB 
 ## Datasets:
 ##     1995 
 ##         Format:     hdfio_column 
@@ -178,7 +178,8 @@ Finally, we can convert a directory of csv files into a single HDF5 file using `
 
 ```r
 file.remove("/tmp/airlines.h5")
-dir2h5(".", h5out="/tmp/airlines.h5", dataset="airlines", verbose=TRUE, compression=4)
+dir2h5(".", h5out="/tmp/airlines.h5", dataset="airlines", verbose=TRUE)
+## Checking input files for common header lines...ok!
 ## Scanning all input files for storage info...ok!
 ## Processing 22 files:
 ##     ./1987.csv: reading...ok! writing...ok!
@@ -219,7 +220,7 @@ The process can take a lot of time, as every single file has to be scanned first
 If you just want to drop a bunch of different (possibly unrelated) csv files into a single HDF5 file, you can use `dir2h5()` with `combined=FALSE`. In this case:
 
 ```r
-dir2h5(".", h5out="/tmp/airlines_split.h5", combined=FALSE, compression=4)
+dir2h5(".", h5out="/tmp/airlines_split.h5", combined=FALSE)
 
 summarize_h5df("/tmp/airlines_split.h5")
 ## Filename:    /tmp/airlines_split.h5 
@@ -293,7 +294,7 @@ summarize_h5df("/tmp/airlines_split.h5")
 ##         Dimensions: 7009728 x 29 
 ```
 
-We've already seen the file sizes of these files in the `summarize_h5df()` output. But notice the effectiveness of using `compression=4` here:
+Notice the effectiveness of the default compression level (`compression=4`) here:
 
 ```r
 library(memuse)
