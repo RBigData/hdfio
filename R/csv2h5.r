@@ -63,9 +63,17 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
   indices = chunker_indices(nrows, num_chunks)
   
   if (isTRUE(yolo))
+  {
+    verbprint(verbose, "Living dangerously...\n")
     strlens = NULL
+  }
   else
+  {
+    verbprint(verbose, "Scanning all input files for storage info...")
     strlens = csv2h5_get_strlen(file)
+    verbprint(verbose, "ok!\n")
+  }
+  
   
   n = length(indices)
   progress_printer(0, n, verbose)
@@ -88,6 +96,10 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     
     writer(x, start_ind, h5_fp, dataset, types)
   }
+  
+  verbprint(verbose, "done!\n")
+  
+  invisible(TRUE)
 }
 
 

@@ -159,7 +159,9 @@ The other way to transform a csv file into an HDF5 file is the `csv2h5()` functi
 
 ```r
 csv2h5("1995.csv", h5out="/tmp/airlines1995.h5", verbose=TRUE)
+## Scanning all input files for storage info...ok!
 ## Processing batch 1/1
+## done!
 ```
 
 As the output implies, the function will process the csv file in batches if the entire dataset can't fit into RAM. This dataset is small enough that it easily fits into RAM in one batch on this computer, so it processes the entire file in 1 batch.  If a dataset name is not specified, one will be inferred from the name of the input file. This dataset is named `1995` since the input file was `1995.csv` and a dataset name (for the HDF5 file) wasn't specificed:
