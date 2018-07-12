@@ -7,11 +7,10 @@
 \title{csv2h5}
 \usage{
 csv2h5(file, h5out, dataset = NULL, format = "column", compression = 4,
-  stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
+  yolo = FALSE, verbose = FALSE, ...)
 
 dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
-  compression = 4, stringsAsFactors = FALSE, yolo = FALSE,
-  verbose = FALSE)
+  compression = 4, yolo = FALSE, verbose = FALSE, ...)
 }
 \arguments{
 \item{file}{Input file.}
@@ -25,11 +24,13 @@ dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
 \item{compression}{HDF5 compression level. An integer, 0 (least compression) to 9 (most
 compression).}
 
-\item{stringsAsFactors}{TODO}
-
 \item{yolo}{TODO}
 
 \item{verbose}{TODO}
+
+\item{...}{Additional arguments passed to \code{fread()}. Can not include \code{file},
+\code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
+\code{data.table}.}
 
 \item{csvdir}{TODO}
 

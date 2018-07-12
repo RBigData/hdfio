@@ -12,7 +12,7 @@ csv2h5_validation_dir = function(files, h5_fp)
 
 
 
-csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L)
+csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L, ...)
 {
   for (file in files)
   {
@@ -33,9 +33,9 @@ csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L)
         nr = end - skip + 1
       
       if (skip == 1)
-        x = csv_reader(file, skip=skip-1, nrows=nr, stringsAsFactors=FALSE)
+        x = csv_reader(file, skip=skip-1, nrows=nr, ...)
       else
-        x = csv_reader(file, skip=skip, nrows=nr, stringsAsFactors=FALSE)
+        x = csv_reader(file, skip=skip, nrows=nr, ...)
       
       lens = pmax(lens, sapply(x, get_max_str_len))
     }
@@ -50,7 +50,7 @@ csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L)
 # writers
 # -----------------------------------------------------------------------------
 
-csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression, ...)
 {
   if (format == "column")
   {
@@ -87,9 +87,9 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     nr = end - start_ind + 1
     
     if (start_ind == 1)
-      x = csv_reader(file, skip=start_ind-1, nrows=nr, stringsAsFactors=stringsAsFactors)
+      x = csv_reader(file, skip=start_ind-1, nrows=nr, ...)
     else
-      x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
+      x = csv_reader(file, skip=start_ind, nrows=nr, ...)
     
     if (start_ind == 1)
       types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
@@ -104,7 +104,7 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 
 
 
-csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression, ...)
 {
   if (format == "column")
   {
@@ -139,7 +139,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     verbprint(verbose, paste0("    ", file, ": reading..."))
     # TODO batch process csv files?
     
-    x = csv_reader(file, stringsAsFactors=stringsAsFactors)
+    x = csv_reader(file, ...)
     
     if (start_ind == 1)
       types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
@@ -182,14 +182,16 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @param compression
 #' HDF5 compression level. An integer, 0 (least compression) to 9 (most
 #' compression).
-#' @param stringsAsFactors
-#' TODO
 #' @param yolo
 #' TODO
 #' @param verbose
 #' TODO
 #' @param combined
 #' TODO
+#' @param ...
+#' Additional arguments passed to \code{fread()}. Can not include \code{file},
+#' \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
+#' \code{data.table}.
 #' 
 #' @return
 #' Invisibly returns \code{TRUE} on success.
@@ -202,7 +204,7 @@ NULL
 
 #' @rdname csv2h5
 #' @export
-csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
   check.is.string(file)
   check.file(file)
@@ -215,14 +217,13 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
-  check.is.flag(stringsAsFactors)
   check.is.flag(yolo)
   check.is.flag(verbose)
   
   h5_fp = h5file(h5out, mode="a")
   h5_check_dataset(h5_fp, dataset)
   
-  csv2h5_file(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+  csv2h5_file(file, h5_fp, dataset, format, yolo, verbose, compression, ...)
   
   h5close(h5_fp)
 }
@@ -231,7 +232,7 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 
 #' @rdname csv2h5
 #' @export
-dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
+dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
   check.is.string(csvdir)
   check.is.string(h5out)
@@ -242,7 +243,6 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
-  check.is.flag(stringsAsFactors)
   check.is.flag(yolo)
   check.is.flag(verbose)
   
@@ -263,7 +263,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
     close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
   
   if (isTRUE(combined))
-    csv2h5_dir(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+    csv2h5_dir(files, h5_fp, dataset, format, yolo, verbose, compression, ...)
   else
   {
     verbprint(verbose, paste("Processing", length(files), "files:\n"))
@@ -271,7 +271,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
     {
       verbprint(verbose, paste0("    ", file, " "))
       dataset = h5_infer_dataset(file)
-      csv2h5_file(file, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
+      csv2h5_file(file, h5_fp, dataset, format, yolo, verbose, compression, ...)
     }
   }
   
