@@ -159,6 +159,9 @@ comp_struc <- function(dataframe) {
   classes <- unlist(lapply(dataframe, class))
   x <-  vector("list", length(classes))
   for (j in 1:ncol(dataframe)) {
+    if(class(dataframe[,j]) == "factor") {
+      dataframe[,j] <- as.character(dataframe[,j])
+    }
     if(class(dataframe[,j]) =="character" | class(dataframe[,j]) == "factor") {
       strings_vec_max <- hdfio:::get_max_str_len(dataframe[,j])
       max_string <- strings_vec_max
