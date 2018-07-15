@@ -58,6 +58,11 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     writer_init = write_h5df_column_init
   }
   
+  else if (format == "compound") {
+    writer = write_h5df_compound
+    writer_init = write_h5df_compound_init
+  }
+  
   nrows = csv_nrows(file)
   num_chunks = chunker_numchunks(file)
   indices = chunker_indices(nrows, num_chunks)
@@ -91,10 +96,20 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     else
       x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
     
-    if (start_ind == 1)
-      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
-    
-    writer(x, start_ind, h5_fp, dataset, types)
+    if (format == "column") {
+      if (start_ind == 1)
+        types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      
+      writer(x, start_ind, h5_fp, dataset, types) 
+    }
+    else if (format == "compound") {
+      if (start_ind == 1)
+     #   types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      
+      writer(x, start_ind, h5_fp, dataset) 
+      
+    }
+
   }
   
   verbprint(verbose, "done!\n")
@@ -112,6 +127,11 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     writer_init = write_h5df_column_init
   }
   
+  else if (format == "compound") 
+  {
+    writer = write_h5df_compound
+    writer_init = write_h5df_compound_init
+  }
   
   if (isTRUE(yolo))
   {
@@ -141,21 +161,36 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     
     x = csv_reader(file, stringsAsFactors=stringsAsFactors)
     
-    if (start_ind == 1)
-      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+    if (format == "column") {
+      
+      if (start_ind == 1)
+        types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      
+      verbprint(verbose, "ok! writing...")
+      writer(x, start_ind, h5_fp, dataset, types)
+      verbprint(verbose, "ok!\n")
+      
+      start_ind = start_ind + NROW(x)
+      
+      
+    }
     
-    verbprint(verbose, "ok! writing...")
-    writer(x, start_ind, h5_fp, dataset, types)
-    verbprint(verbose, "ok!\n")
-    
-    start_ind = start_ind + NROW(x)
+     else if (format == "compound") {
+       if (start_ind == 1)
+    #     types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+    #   
+    #   
+          writer(x, start_ind, h5_fp, dataset)
+
+     }
+
+
   }
   
   verbprint(verbose, "done!\n")
   
   invisible(TRUE)
 }
-
 
 
 # -----------------------------------------------------------------------------
@@ -211,7 +246,7 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
     check.is.string(dataset)
   else
     dataset = h5_infer_dataset(file)
-  format = match.arg(tolower(format), c("column")) # TODO compound
+  format = match.arg(tolower(format), c("column", "compound")) 
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
@@ -238,7 +273,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
   if (!is.null(dataset))
     check.is.string(dataset)
   check.is.flag(combined)
-  format = match.arg(tolower(format), c("column")) # TODO compound
+  format = match.arg(tolower(format), c("column", "compound")) # TODO compound
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
