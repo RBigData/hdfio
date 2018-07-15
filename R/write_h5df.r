@@ -145,7 +145,7 @@ format_df <- function(dataframe) {
     dataframe <- as.data.frame(dataframe)
   }
   for (j in 1:ncol(dataframe)) {
-    if(class(dataframe[,j]) == "logical") {
+    if(class(dataframe[,j]) == "logical" | class(dataframe[,j]) == "factor") {
       dataframe[,j] <- as.character(dataframe[,j])  #if columns are all NA, it's imported as logical class (fread)
     }
   }
@@ -159,10 +159,7 @@ comp_struc <- function(dataframe) {
   classes <- unlist(lapply(dataframe, class))
   x <-  vector("list", length(classes))
   for (j in 1:ncol(dataframe)) {
-    if(class(dataframe[,j]) == "factor") {
-      dataframe[,j] <- as.character(dataframe[,j])
-    }
-    if(class(dataframe[,j]) =="character" | class(dataframe[,j]) == "factor") {
+    if(class(dataframe[,j]) =="character") {
       strings_vec_max <- hdfio:::get_max_str_len(dataframe[,j])
       max_string <- strings_vec_max
       x[[j]] <- H5T_STRING$new(size = as.numeric(max_string)) 
@@ -175,6 +172,14 @@ comp_struc <- function(dataframe) {
     }
   }
   return(x)
+}
+
+#Helper function 3
+RandAlphNumID <- function() {
+  stID = c(sample(LETTERS, 3, replace = TRUE),
+           sample(0:9, 3, replace = TRUE),
+           sample(LETTERS, 3, replace = TRUE))
+  return(paste0(stID,collapse = ""))
 }
 
 
@@ -202,7 +207,7 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
   comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
   
   
-  h5_fp[[dataset]]$create_dataset(name="data", robj = df, dtype=comp2,
+  h5_fp[[dataset]]$create_dataset(name=paste("dataset",RandAlphNumID(),sep="_"), robj = df, dtype=comp2,
                                   space=H5S$new(dims = nrow(df), maxdims = Inf))
   
 }
