@@ -105,8 +105,8 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     else if (format == "compound") {
       if (start_ind == 1)
 
-      writer(x, start_ind, h5_fp, dataset) 
-      
+      writer(x, start_ind, h5_fp, dataset)
+
     }
 
   }
@@ -117,44 +117,6 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 }
 
 
-
-# k <- function(files = NULL) {
-#   if (!is.null(files)) {
-#    print(files)
-#    length = length(files)
-#    return(length)
-#   }
-#   else {
-#     invisible(TRUE)
-#   }
-# }
-# 
-# files <- c("a", "ABd","c")
-# k(files)
-#Helper function 
-# write_h5df_compound2 = function(x, start_ind, h5_fp, dataset) {
-# 
-# 
-#     hdf5r::createGroup(h5_fp, dataset)
-#       
-#     df <- x
-#     df <- format_df(df)
-#     comp <- comp_struc(df)
-#     comp2 <- vector("list", 1L)
-#     comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
-#       
-#       # for (i in 1:length(files)) {
-#       #   h5_fp[[dataset]]$create_dataset(name=paste("dataset",i,sep=""), robj = df, dtype=comp2,
-#       #                                   space=H5S$new(dims = nrow(df), maxdims = Inf))
-#       #   
-#       # }
-#       
-#  
-#       h5_fp[[dataset]]$create_dataset(name=paste("dataset",gsub('.*\\/', '', file)), robj = df, dtype=comp2,
-#                                         space=H5S$new(dims = nrow(df), maxdims = Inf))
-#   
-# }
-# 
 
 csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, verbose, compression)
 {
@@ -211,13 +173,6 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
       
       
     }
-    
-     else if (format == "compound") {
-       if (start_ind == 1)
-          
-         writer(x, start_ind, h5_fp, dataset)
-
-     }
 
 
   }
@@ -348,9 +303,3 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
   
   h5close(h5_fp)
 }
-
-#dir2h5("/pbdR/airlines_copy", h5out = "/pbdR/work/adjFUNC.h5",dataset="airlines",combined=TRUE, format = "compound")
-
-
-
-
