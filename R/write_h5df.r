@@ -145,8 +145,8 @@ format_df <- function(dataframe) {
     dataframe <- as.data.frame(dataframe)
   }
   for (j in 1:ncol(dataframe)) {
-    if(class(dataframe[,j]) == "logical" | class(dataframe[,j]) == "factor") {
-      dataframe[,j] <- as.character(dataframe[,j])  #if columns are all NA, it's imported as logical class (fread)
+    if(class(dataframe[,j]) == "factor") {
+      dataframe[,j] <- as.character(dataframe[,j])  #cast factors as chars
     }
   }
   dataframe <- dataframe 
@@ -167,6 +167,9 @@ comp_struc <- function(dataframe) {
     else if(class(dataframe[,j]) == "integer") {
       x[[j]] <-  h5types$H5T_NATIVE_INT  
     }
+    else if (class(dataframe[,j]) == "logical") {
+      x[[j]] <- H5T_LOGICAL$new() #Handles NAs perfectly fine. 
+    }
     else {
       x[[j]] <- h5types$H5T_NATIVE_DOUBLE
     }
@@ -176,11 +179,17 @@ comp_struc <- function(dataframe) {
 
 #Helper function 3
 RandAlphNumID <- function() {
-  stID = c(sample(LETTERS, 3, replace = TRUE),
+  stID = c(sample(c(letters,LETTERS), 3, replace = TRUE),
            sample(0:9, 3, replace = TRUE),
-           sample(LETTERS, 3, replace = TRUE))
+           sample(c(letters,LETTERS), 3, replace = TRUE))
   return(paste0(stID,collapse = ""))
 }
+
+
+
+
+
+
 
 
 write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression) {
@@ -198,6 +207,7 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
 
 write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
   
+  #need <- fun1(x)
   hdf5r::createGroup(h5_fp, dataset)
   
   df <- x
@@ -206,9 +216,9 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
   comp2 <- vector("list", 1L)
   comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
   
-  
+
   h5_fp[[dataset]]$create_dataset(name=paste("dataset",RandAlphNumID(),sep="_"), robj = df, dtype=comp2,
-                                  space=H5S$new(dims = nrow(df), maxdims = Inf))
+                                    space=H5S$new(dims = nrow(df), maxdims = Inf))
   
 }
 
