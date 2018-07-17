@@ -178,13 +178,13 @@ comp_struc <- function(dataframe) {
 }
 
 #Helper function 3
-RandAlphNumID <- function() {
-  stID = c(sample(c(letters,LETTERS), 3, replace = TRUE),
-           sample(0:9, 3, replace = TRUE),
-           sample(c(letters,LETTERS), 3, replace = TRUE))
-  return(paste0(stID,collapse = ""))
-}
-
+# RandAlphNumID <- function() {
+#   stID = c(sample(c(letters,LETTERS), 3, replace = TRUE),
+#            sample(0:9, 3, replace = TRUE),
+#            sample(c(letters,LETTERS), 3, replace = TRUE))
+#   return(paste0(stID,collapse = ""))
+# }
+# 
 
 
 
@@ -204,23 +204,63 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
 
 
 
+# 
+# write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
+# 
+#   hdf5r::createGroup(h5_fp, dataset)
+# 
+#   df <- x
+#   df <- format_df(df)
+#   comp <- comp_struc(df)
+#   comp2 <- vector("list", 1L)
+#   comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
+# 
+# 
+#   h5_fp[[dataset]]$create_dataset(name=paste("dataset",RandAlphNumID(),sep="_"), robj = df, dtype=comp2,
+#                                     space=H5S$new(dims = nrow(df), maxdims = Inf))
+# 
+# 
+# }
 
+
+
+#
 write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
-  
-  #need <- fun1(x)
-  hdf5r::createGroup(h5_fp, dataset)
-  
-  df <- x
-  df <- format_df(df)
-  comp <- comp_struc(df)
-  comp2 <- vector("list", 1L)
-  comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
-  
 
-  h5_fp[[dataset]]$create_dataset(name=paste("dataset",RandAlphNumID(),sep="_"), robj = df, dtype=comp2,
-                                    space=H5S$new(dims = nrow(df), maxdims = Inf))
-  
+  hdf5r::createGroup(h5_fp, dataset)
+  df <- hdfio:::format_df(x)
+  if (start_ind == 1){ ### NOTE this is really a job for the initializer
+
+    comp <- hdfio:::comp_struc(df)
+
+    comp2 <- vector("list", 1L)
+
+    comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
+
+
+
+    h5_fp[[dataset]]$create_dataset(
+
+      name="data", robj = df, dtype=comp2,
+
+      space=H5S$new(dims = nrow(df), maxdims = Inf)
+
+    )
+
+  }
+
+  else
+
+  {
+
+    indices <- start_ind:(start_ind + NROW(df) - 1)
+
+    h5_fp[[hdfio:::glue(dataset, "data")]][indices] <- df
+
+  }
+
 }
+
 
 # -----------------------------------------------------------------------------
 # interface
