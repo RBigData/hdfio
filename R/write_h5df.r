@@ -136,7 +136,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
 # -----------------------------------------------------------------------------
 # compound
 # -----------------------------------------------------------------------------
-#Helper Function 1
+
 format_df <- function(dataframe) {
   if(!is.data.frame(dataframe)) {
     stop("Object provided is not a dataframe")
@@ -146,14 +146,14 @@ format_df <- function(dataframe) {
   }
   for (j in 1:ncol(dataframe)) {
     if(class(dataframe[,j]) == "factor") {
-      dataframe[,j] <- as.character(dataframe[,j])  #cast factors as chars
+      dataframe[,j] <- as.character(dataframe[,j])  
     }
   }
   dataframe <- dataframe 
 }
 
 
-#Helper Function 2
+
 comp_struc <- function(dataframe) {
   max_string <- NA
   classes <- unlist(lapply(dataframe, class))
@@ -177,18 +177,6 @@ comp_struc <- function(dataframe) {
   return(x)
 }
 
-#Helper function 3
-# RandAlphNumID <- function() {
-#   stID = c(sample(c(letters,LETTERS), 3, replace = TRUE),
-#            sample(0:9, 3, replace = TRUE),
-#            sample(c(letters,LETTERS), 3, replace = TRUE))
-#   return(paste0(stID,collapse = ""))
-# }
-# 
-
-
-
-
 
 
 
@@ -203,28 +191,6 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
 }
 
 
-
-# 
-# write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
-# 
-#   hdf5r::createGroup(h5_fp, dataset)
-# 
-#   df <- x
-#   df <- format_df(df)
-#   comp <- comp_struc(df)
-#   comp2 <- vector("list", 1L)
-#   comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
-# 
-# 
-#   h5_fp[[dataset]]$create_dataset(name=paste("dataset",RandAlphNumID(),sep="_"), robj = df, dtype=comp2,
-#                                     space=H5S$new(dims = nrow(df), maxdims = Inf))
-# 
-# 
-# }
-
-
-
-#
 write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
 
   hdf5r::createGroup(h5_fp, dataset)
