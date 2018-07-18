@@ -160,26 +160,25 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     
     x = csv_reader(file, stringsAsFactors=stringsAsFactors)
     
-    if (format == "column") {
+  
       
       if (start_ind == 1)
         types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
       
       verbprint(verbose, "ok! writing...")
-      writer(x, start_ind, h5_fp, dataset, types)
+      writer(x, start_ind, h5_fp, dataset)
       verbprint(verbose, "ok!\n")
       
       start_ind = start_ind + NROW(x)
       
-      
-    }
 
 
   }
   
   verbprint(verbose, "done!\n")
-  
   invisible(TRUE)
+  
+  
 }
 
 
@@ -303,3 +302,6 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
   
   h5close(h5_fp)
 }
+
+
+
