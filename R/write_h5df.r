@@ -198,20 +198,10 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
   if (start_ind == 1){ ### NOTE this is really a job for the initializer
 
     comp <- hdfio:::comp_struc(df)
-
     comp2 <- vector("list", 1L)
-
     comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
 
-
-
-    h5_fp[[dataset]]$create_dataset(
-
-      name="data", robj = df, dtype=comp2,
-
-      space=H5S$new(dims = nrow(df), maxdims = Inf)
-
-    )
+    h5_fp[[dataset]]$create_dataset(name="data", robj = df, dtype=comp2,space=H5S$new(dims = nrow(df), maxdims = Inf))
 
   }
 
@@ -220,7 +210,6 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
   {
 
     indices <- start_ind:(start_ind + NROW(df) - 1)
-
     h5_fp[[hdfio:::glue(dataset, "data")]][indices] <- df
 
   }
@@ -241,20 +230,29 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
 #' @param file
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case, TODO
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
+#' within a group named as the input dataset
 #' @param format
-#' TODO
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, the entire input dataset is written out on disk
+#' as a complete dataframe
 #' @param compression
-#' TODO
+#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).
 #' 
 #' @return
 #' A dataframe.
 #' 
 #' @examples
 #' library(hdfio)
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
+#' #TODO column example: I keep getting error that says "col.fac" not found
+#' write_h5df(x = df, file = "/tmp/RtmpcnNMWw/example.h5", dataset = "data", format = "compound", compression=4)
 #' 
-#' # TODO
+#' #TODO column example: ERROR ABOVE ^. I keep getting error that says "col.fac" not found
 #' 
+#' 
+#' write_h5df(x = df, file = "/tmp/RtmpcnNMWw/example2.h5", dataset = "data", format = "compound", compression=4)
+#' #TODO show output of this.  Reader isn't developed for compound type...  Shouldn't it be very similar to column? 
 #' @seealso
 #' \code{\link{read_h5df}}
 #' 
@@ -262,6 +260,8 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
 write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
 {
   check.is.string(file)
+  if(file.exists(file))
+    file.remove(file)
   if (!is.null(dataset))
     check.is.string(dataset)
   else
@@ -295,3 +295,4 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   
   h5close(h5_fp)
 }
+
