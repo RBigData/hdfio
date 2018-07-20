@@ -186,7 +186,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 # interface
 # -----------------------------------------------------------------------------
 
-#' csv2h5
+#' csv2h5_dir
 #' 
 #' Convert a csv file or a directory of csv files to HDF5 dataset.
 #' 
@@ -196,24 +196,28 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @param file
 #' Input file.
 #' @param csvdir
-#' TODO
+#' Path containing csv files
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' TODO
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
+#' within a group named as the input dataset
 #' @param format
-#' TODO
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, the entire input dataset is written out on disk
+#' as a complete dataframe.
 #' @param compression
 #' HDF5 compression level. An integer, 0 (least compression) to 9 (most
 #' compression).
 #' @param stringsAsFactors
-#' TODO
+#' Option to read character columns as factors. Default is \code{FALSE}.
 #' @param yolo
-#' TODO
+#' Logical. If \code{FALSE}...
 #' @param verbose
-#' TODO
+#' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
 #' @param combined
-#' TODO
+#' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
+#' the datasets will be contained within distinct groups indexed by csv name.
 #' 
 #' @return
 #' Invisibly returns \code{TRUE} on success.
