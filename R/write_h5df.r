@@ -116,7 +116,9 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
     {
       if (is.character(col))
         col.fac = factor(col) # TODO grab levels
-      
+      else if (is.factor(col)) { #Amil added this...not sure if needed.
+        col.fac = factor(col)
+      }
       col = as.integer(col.fac)
     }
     else if (types[j] == H5_STORAGE_STR)
@@ -245,14 +247,38 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
 #' @examples
 #' library(hdfio)
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
-#' #TODO column example: I keep getting error that says "col.fac" not found
-#' write_h5df(x = df, file = "/tmp/RtmpcnNMWw/example.h5", dataset = "data", format = "compound", compression=4)
+#' head(df)
+#'   x         y       z
+#' 1 1 0.7446626   Peter
+#' 2 2 0.9334611   Amber
+#' 3 3 0.3400924    John
+#' 4 4 0.9756722 Lindsey
+#' 5 5 0.3500774  Steven
 #' 
-#' #TODO column example: ERROR ABOVE ^. I keep getting error that says "col.fac" not found
+#' #TODO column example: I keep getting error that says "col.fac" not found - EDIT - added an if statement 10/21
+#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4)
+#' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
+#'   x         y       z
+#' 1 1 0.7446626   Peter
+#' 2 2 0.9334611   Amber
+#' 3 3 0.3400924    John
+#' 4 4 0.9756722 Lindsey
+#' 5 5 0.3500774  Steven
 #' 
 #' 
 #' write_h5df(x = df, file = "/tmp/RtmpcnNMWw/example2.h5", dataset = "data", format = "compound", compression=4)
-#' #TODO show output of this.  Reader isn't developed for compound type...  Shouldn't it be very similar to column? 
+#' #TODO show output of this.  Reader isn't developed for compound type...  Shouldn't it be very similar to column?
+#' EDIT, made a temporary ("wrongish") reader for compound type...just as a placeholder
+#' read_h5df_compound(paste(tempdir(), "example2.h5", sep="/"))
+#'   x         y       z
+#' 1 1 0.7446626   Peter
+#' 2 2 0.9334611   Amber
+#' 3 3 0.3400924    John
+#' 4 4 0.9756722 Lindsey
+#' 5 5 0.3500774  Steven
+#' 
+#' 
+#' 
 #' @seealso
 #' \code{\link{read_h5df}}
 #' 
