@@ -94,6 +94,26 @@ read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
 
 
 
+
+
+read_h5df_compound=function(h5_fp)
+ {
+  
+
+  h5 <- h5file(h5_fp)
+  
+  x <- h5[["data/data"]][]
+
+ 
+  hdf5r::h5close(h5)
+  
+  return(x)
+  
+}
+
+
+
+
 # -----------------------------------------------------------------------------
 # pytables readers
 # -----------------------------------------------------------------------------
