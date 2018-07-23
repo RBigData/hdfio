@@ -104,8 +104,10 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     }
     else if (format == "compound") {
       if (start_ind == 1)
+        types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      
 
-      writer(x, start_ind, h5_fp, dataset)
+      writer(x, start_ind, h5_fp, dataset,types)
 
     }
 
@@ -166,7 +168,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
         types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
       
       verbprint(verbose, "ok! writing...")
-      writer(x, start_ind, h5_fp, dataset)
+      writer(x, start_ind, h5_fp, dataset,types)
       verbprint(verbose, "ok!\n")
       
       start_ind = start_ind + NROW(x)
