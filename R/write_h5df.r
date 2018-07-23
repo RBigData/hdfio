@@ -180,6 +180,13 @@ comp_struc <- function(dataframe) {
 }
 
 
+# H5_STORAGE_STR = 0L
+# H5_STORAGE_DBL = 1L
+# H5_STORAGE_INT = 2L
+# H5_STORAGE_LGL = 3L
+# H5_STORAGE_FAC = 4L
+# H5_STORAGE_DATE = 5L
+
 
 
 write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression) {
@@ -190,10 +197,38 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
   createGroup(h5_fp, dataset)
   h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
   
+  types <- 1:ncol(x)
+  
+  for (j in 1:ncol(x)) {
+    if(class(x[,j]) =="character") {
+      types[j] = H5_STORAGE_STR 
+    }
+    else if (class(x[,j]) =="integer") {
+      types[j] = H5_STORAGE_INT
+    }
+    else if (class(x[,j]) == "logical") {
+      types[j] = H5_STORAGE_LGL
+    }
+    else if (class(x[,j]) == "factor") {
+      types[j] = H5_STORAGE_FAC 
+    }
+    else if (class(x[,j]) == "numeric") {
+      types[j] =  H5_STORAGE_DBL 
+    }
+    else {
+      types[j] = H5_STORAGE_DATE = 5L
+    }
+  }
+  
+  return(types)
+  
 }
 
 
-write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
+write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
+  h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_compound"
+  h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
+  
 
   hdf5r::createGroup(h5_fp, dataset)
   df <- hdfio:::format_df(x)
@@ -315,7 +350,8 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   } 
   else if (format == "compound")
   {
-    write_h5df_compound(x, 1, h5_fp, dataset)
+    types=write_h5df_compound_init(x, h5_fp, dataset, strlens=NULL, compression=compression)
+    write_h5df_compound(x, 1, h5_fp, dataset, types)
     
   }
   
