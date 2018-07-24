@@ -96,19 +96,19 @@ read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
 
 
 
-read_h5df_compound=function(h5_fp)
+read_h5df_compound=function(h5_fp, dataset)
  {
   
+  datasets <- list.datasets(h5_fp[[dataset]])
+  is_string = sapply(datasets, function(ds) h5_is_string(h5_fp, dataset, ds))
+  cols = 1:length(colnames)
+  colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
+  
+  df <- h5_fp[[glue(dataset,"data")]][]
+  colnames(df) <- colnames
+  
+  return(df)
 
-  h5 <- h5file(h5_fp)
-  
-  x <- h5[["data/data"]][]
-
- 
-  hdf5r::h5close(h5)
-  
-  return(x)
-  
 }
 
 
@@ -231,7 +231,7 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, ver
   
   h5_fp = h5file(h5in, mode="r")
   dataset = h5_get_dataset(h5_fp, dataset)
-  fmt = h5_detect_format(h5_fp, dataset, verbose)
+  fmt = h5_detect_format(h5_fp, dataset, verbose=TRUE)
   
   if (!is.null(cols) && fmt != "hdfio_column")
     close_and_stop(h5_fp, "argument 'cols' can only be a vector of indices if format is hdfio_column")
@@ -246,6 +246,8 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, ver
     df = read_pytables_table(h5_fp, dataset, rows)
   else if (fmt == "pytables_fixed")
     df = read_pytables_fixed(h5_fp, dataset, rows)
+  else if (fmt == "hdfio_compound")
+    df = read_h5df_compound(h5_fp, dataset)
   else
     close_and_stop(h5_fp, "unknown format")
   
