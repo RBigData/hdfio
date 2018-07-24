@@ -216,7 +216,7 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
       types[j] =  H5_STORAGE_DBL 
     }
     else {
-      types[j] = H5_STORAGE_DATE = 5L
+      types[j] = H5_STORAGE_DATE 
     }
   }
   
@@ -231,6 +231,8 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
   
 
   hdf5r::createGroup(h5_fp, dataset)
+  h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
+  
   df <- hdfio:::format_df(x)
   if (start_ind == 1){ ### NOTE this is really a job for the initializer
 
@@ -290,8 +292,9 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' 4 4 0.9756722 Lindsey
 #' 5 5 0.3500774  Steven
 #' 
-#' #TODO column example: I keep getting error that says "col.fac" not found - EDIT - added an if statement 10/21
+#' #TODO column example: I keep getting error that says "col.fac" not found - EDIT - added an if statement 7/15/21
 #' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4)
+#' #Result
 #' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
 #'   x         y       z
 #' 1 1 0.7446626   Peter
