@@ -240,6 +240,8 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
   check.is.string(file)
   check.file(file)
   check.is.string(h5out)
+  if(file.exists(h5out))
+    file.remove(h5out)
   if (!is.null(dataset))
     check.is.string(dataset)
   else
@@ -305,6 +307,8 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
 {
   check.is.string(csvdir)
   check.is.string(h5out)
+  if(file.exists(h5out))
+    file.remove(h5out)
   if (!is.null(dataset))
     check.is.string(dataset)
   check.is.flag(combined)
@@ -379,7 +383,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
 #' #Write df to csv in temp directory 
 #' library(hdfio)
 #' df2 <- data.frame(a = runif(10), b=seq(1:10))
-#' utils::write.csv(x = df2, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE)
+#' utils::write.csv(x = df2, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) #Note, row names must be false
 #' list.files(tempdir())
 #' [1] "df2.csv" "df.csv" 
 #' 
