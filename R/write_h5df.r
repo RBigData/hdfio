@@ -170,7 +170,7 @@ comp_struc <- function(dataframe) {
       x[[j]] <-  h5types$H5T_NATIVE_INT  
     }
     else if (class(dataframe[,j]) == "logical") {
-      x[[j]] <- H5T_LOGICAL$new() #Handles NAs perfectly fine. 
+      x[[j]] <- H5T_LOGICAL$new() 
     }
     else {
       x[[j]] <- h5types$H5T_NATIVE_DOUBLE
@@ -178,15 +178,6 @@ comp_struc <- function(dataframe) {
   }
   return(x)
 }
-
-
-# H5_STORAGE_STR = 0L
-# H5_STORAGE_DBL = 1L
-# H5_STORAGE_INT = 2L
-# H5_STORAGE_LGL = 3L
-# H5_STORAGE_FAC = 4L
-# H5_STORAGE_DATE = 5L
-
 
 
 write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression) {
@@ -282,9 +273,10 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' A dataframe.
 #' 
 #' @examples
+#' #Example 1
 #' library(hdfio)
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
-#' head(df)
+#' (df)
 #'   x         y       z
 #' 1 1 0.7446626   Peter
 #' 2 2 0.9334611   Amber
@@ -292,10 +284,13 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' 4 4 0.9756722 Lindsey
 #' 5 5 0.3500774  Steven
 #' 
-#' #TODO column example: I keep getting error that says "col.fac" not found - EDIT - added an if statement 7/15/21
+#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3
 #' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4)
+#'
+#' To verify, we can read the data back in. #Is it ok if we keep verbose = TRUE on for our readers??
 #' #Result
 #' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
+#' detecting format...hdfio_column          
 #'   x         y       z
 #' 1 1 0.7446626   Peter
 #' 2 2 0.9334611   Amber
@@ -304,10 +299,15 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' 5 5 0.3500774  Steven
 #' 
 #' 
-#' write_h5df(x = df, file = "/tmp/RtmpcnNMWw/example2.h5", dataset = "data", format = "compound", compression=4)
-#' #TODO show output of this.  Reader isn't developed for compound type...  Shouldn't it be very similar to column?
-#' EDIT, made a temporary ("wrongish") reader for compound type...just as a placeholder
-#' read_h5df_compound(paste(tempdir(), "example2.h5", sep="/"))
+#' #Example 2
+#' #Write dataframe (df) out in compound format 
+#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4)
+#' 
+#' #To verify, we read the data back in.
+#' 
+#' #Result
+#' read_h5df(paste(tempdir(), "example2.h5", sep="/"))
+#' detecting format...hdfio_compound 
 #'   x         y       z
 #' 1 1 0.7446626   Peter
 #' 2 2 0.9334611   Amber
