@@ -95,6 +95,13 @@ h5_dim = function(h5_fp, dataset)
     nrows = h5_fp[[glue(dataset, "axis1")]]$maxdims
     ncols = h5_fp[[glue(dataset, "axis0")]]$maxdims
   }
+  
+  else if (format == "hdfio_compound") 
+  {
+    f = h5_fp[[glue(dataset,"data")]]
+    nrows = dim(h5_fp[[glue(dataset,"data")]][])[1]
+    ncols =  dim(h5_fp[[glue(dataset,"data")]][])[2]
+  }
   else
     stop("unknown format")
   
