@@ -340,7 +340,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
     }
   }
   
-  files = dir(csvdir, pattern="*.csv", full.names=TRUE, ignore.case=TRUE)
+  files = dir(csvdir, pattern="*\\.csv$", full.names=TRUE, ignore.case=TRUE)
   if (length(files) == 0)
     close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
   
