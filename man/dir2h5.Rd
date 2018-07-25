@@ -19,9 +19,9 @@ within a group named as the input dataset}
 \item{combined}{#' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
 the datasets will be contained within distinct groups indexed by csv name.}
 
-\item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written \cr
-out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). \cr
-If \code{compound}, the entire input dataset is written out on disk \cr
+\item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
+If \code{compound}, the entire input dataset is written out on disk 
 as a complete dataframe.}
 
 \item{compression}{HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).}

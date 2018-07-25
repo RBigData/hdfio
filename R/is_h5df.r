@@ -14,9 +14,8 @@
 #' Returns \code{TRUE} on success, \code{FALSE} otherwise.
 #' 
 #' 
-#' @example
+#' @examples 
 #' library(hdfio)
-#' 
 #' f = system.file("exampledata/pytables_table.h5", package="hdfio")
 #' is_h5df(f, dataset=NULL)
 #'

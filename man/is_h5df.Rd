@@ -21,6 +21,13 @@ Check if an HDF5 dataset is dataframe-like.
 \details{
 TODO
 }
+\examples{
+library(hdfio)
+f = system.file("exampledata/pytables_table.h5", package="hdfio")
+is_h5df(f, dataset=NULL)
+
+
+}
 \seealso{
 \code{\link{is_h5df}}
 }
