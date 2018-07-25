@@ -187,27 +187,24 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 # -----------------------------------------------------------------------------
 # interface
 # -----------------------------------------------------------------------------
-
-#' csv2h5_dir
+#' csv2h5
 #' 
-#' Convert a csv file or a directory of csv files to HDF5 dataset.
+#' 
+#' Convert a csv file to HDF5 dataset.
 #' 
 #' @details
 #' TODO
-#' 
 #' @param file
 #' Input file.
-#' @param csvdir
-#' Path containing csv files
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
-#' within a group named as the input dataset
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
+#' within a group named as the input dataset.
 #' @param format
 #' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, the entire input dataset is written out on disk
-#' as a complete dataframe.
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
+#' the entire input dataset is written out on disk as a complete dataframe. Default is \code{column}.
 #' @param compression
 #' HDF5 compression level. An integer, 0 (least compression) to 9 (most
 #' compression).
@@ -217,31 +214,30 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' Logical. If \code{FALSE}...
 #' @param verbose
 #' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
-#' @param combined
-#' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
-#' the datasets will be contained within distinct groups indexed by csv name.
 #' 
-#' @return
-#' Invisibly returns \code{TRUE} on success.
+#' @example 
+#' #Write df to csv in temp directory 
+#' library(hdfio)
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) \cr
+#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) \cr
 #' 
-#'
+#' #Read in single csv file (column type)
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, format = "column", compression=4) \cr
+#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
+#' result$ls(recursive=TRUE)
 #' 
 #' 
-#' @name csv2h5
-#' @rdname csv2h5
-NULL
-
-
-
+#' 
 #' @rdname csv2h5
 #' @export
+
+
+
 csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   check.is.string(file)
   check.file(file)
   check.is.string(h5out)
-  if(file.exists(h5out))
-    file.remove(h5out)
   if (!is.null(dataset))
     check.is.string(dataset)
   else
@@ -262,20 +258,31 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
   h5close(h5_fp)
 }
 
-#' @param file
-#' Input file.
+
+
+
+#' dir2h5
+#' 
+#' 
+#' Convert a directory of csv files to HDF5 datasets.
+#' 
+#' @param csvdir
+#' Valid directory containing csv files
 #' @param h5out
 #' Output file.
 #' @param dataset
 #' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
 #' within a group named as the input dataset
+#' @param combined
+#' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
+#' the datasets will be contained within distinct groups indexed by csv name.
 #' @param format
-#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, the entire input dataset is written out on disk
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written \cr
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). \cr
+#' If \code{compound}, the entire input dataset is written out on disk \cr
 #' as a complete dataframe.
 #' @param compression
-#' HDF5 compression level. An integer, 0 (least compression) to 9 (most
-#' compression).
+#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).
 #' @param stringsAsFactors
 #' Option to read character columns as factors. Default is \code{FALSE}.
 #' @param yolo
@@ -283,32 +290,32 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' @param verbose
 #' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
 #' 
-#' @example 
-#' 
+#' @examples  
 #' #Write df to csv in temp directory 
 #' library(hdfio)
-#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
-#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE)
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) \cr
+#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) \cr
+#' df2 <- data.frame(a = runif(10), b=seq(1:10))
+#' utils::write.csv(x = df2, file = paste(tempdir(),"df2.csv",sep="/"), row.names = FALSE) \cr
+#' list.files(tempdir())
 #' 
-#' #Read in single csv file (column type)
-#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, format = "column", compression=4)
-#' read_h5df(paste(tempdir(), "result_column.h5", sep="/"))
-#' x         y       z
-#' 1 1 0.7446626   Peter
-#' 2 2 0.9334611   Amber
-#' 3 3 0.3400924    John
-#' 4 4 0.9756722 Lindsey
-#' 5 5 0.3500774  Steven
+#' #dir2h5 (column format)
+#' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) \cr
 #' 
+#' #Results
+#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
+#' result$ls(recursive=TRUE)
 #' 
-#' @rdname csv2h5
-#' @export
+#' #dir2h5 (compound format)
+#' dir2h5(tempdir(), h5out = paste(tempdir(),"result2.h5",sep="/"),
+#' dataset=NULL, combined=FALSE, format = "compound", compression=4)
+#' #Results:
+#' result2 <- h5file(paste(tempdir(), "result2.h5",sep = "/"))
+#' result2$ls(recursive=TRUE)
 dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   check.is.string(csvdir)
   check.is.string(h5out)
-  if(file.exists(h5out))
-    file.remove(h5out)
   if (!is.null(dataset))
     check.is.string(dataset)
   check.is.flag(combined)
@@ -353,54 +360,5 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", c
   h5close(h5_fp)
 }
 
-
-#' @param csv2dir
-#' Valid directory containing csv files
-#' @param h5out
-#' Output file.
-#' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
-#' within a group named as the input dataset
-#' @param combined
-#' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
-#' the datasets will be contained within distinct groups indexed by csv name.
-#' @param format
-#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, the entire input dataset is written out on disk
-#' as a complete dataframe.
-#' @param compression
-#' HDF5 compression level. An integer, 0 (least compression) to 9 (most
-#' compression).
-#' @param stringsAsFactors
-#' Option to read character columns as factors. Default is \code{FALSE}.
-#' @param yolo
-#' Logical. If \code{FALSE}...
-#' @param verbose
-#' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
-#' 
-#' @example 
-#' 
-#' #Write df to csv in temp directory 
-#' library(hdfio)
-#' df2 <- data.frame(a = runif(10), b=seq(1:10))
-#' utils::write.csv(x = df2, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) #Note, row names must be false
-#' list.files(tempdir())
-#' [1] "df2.csv" "df.csv" 
-#' 
-#' #dir2h5 (column format)
-#' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4)
-#' 
-#' #Results
-#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
-#' result$ls()
-#' 
-#' #dir2h5 (compound format)
-#' dir2h5(tempdir(), h5out = paste(tempdir(),"result2.h5",sep="/"), dataset=NULL, combined=FALSE, format = "compound", compression=4)
-#' #Results:
-#' result2 <- h5file(paste(tempdir(), "result2.h5",sep = "/"))
-#' result2$ls()
-#' 
-#' 
-#' 
 
 
