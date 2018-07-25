@@ -215,23 +215,25 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @param verbose
 #' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
 #' 
-#' @example 
+#' @examples
 #' #Write df to csv in temp directory 
 #' library(hdfio)
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
 #' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' 
 #' #Read in single csv file (column type)
-#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, format = "column", compression=4) 
-#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
-#' result$ls(recursive=TRUE)
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4) 
+#' result_col <- h5file(paste(tempdir(), "result_col.h5",sep = "/"))
+#' result_col$ls(recursive=TRUE)
 #' 
+#' #Read in single csv file (compound type)
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
+#' result_comp <- h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
+#' result_comp$ls(recursive=TRUE)
 #' 
 #' 
 #' @rdname csv2h5
 #' @export
-
-
 
 csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
@@ -288,10 +290,9 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' @param yolo
 #' Logical. If \code{FALSE}...
 #' @param verbose
-#' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
+#' Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
 #' 
 #' @examples  
-#' #Write df to csv in temp directory 
 #' library(hdfio)
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
 #' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 

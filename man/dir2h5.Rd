@@ -30,7 +30,7 @@ as a complete dataframe.}
 
 \item{yolo}{Logical. If \code{FALSE}...}
 
-\item{verbose}{Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.}
+\item{verbose}{Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.}
 }
 \description{
 Convert a directory of csv files to HDF5 datasets.
