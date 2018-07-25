@@ -261,11 +261,11 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' @param file
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained \cr
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
 #' within a group named as the input dataset.
 #' @param format
 #' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). \cr
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
 #' If \code{compound}, the entire input dataset is written out on disk
 #' as a complete dataframe
 #' @param compression
@@ -281,9 +281,9 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
 #' (df)
 #' 
-#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 \cr
+#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 
 #' 
-#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) \cr
+#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) 
 #' #To verify, we can read the data back in. #Is it ok if we keep verbose = TRUE on for our readers??
 #' #Result
 #' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
@@ -291,7 +291,7 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' 
 #' #Example 2
 #' #Write dataframe (df) out in compound format 
-#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4) \cr
+#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4) 
 #' 
 #' #To verify, we read the data back in.
 #' #Result

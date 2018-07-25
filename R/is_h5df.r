@@ -18,11 +18,9 @@
 #' library(hdfio)
 #' 
 #' f = system.file("exampledata/pytables_table.h5", package="hdfio")
-#' is_h5df(f, "mydata")
+#' is_h5df(f, dataset=NULL)
 #'
 #' 
-#' f = system.file("exampledata/not_h5df.h5", package="hdfio")
-#' is_h5df(f, "mydata")
 #' @seealso
 #' \code{\link{is_h5df}}
 #' 

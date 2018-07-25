@@ -218,11 +218,11 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @example 
 #' #Write df to csv in temp directory 
 #' library(hdfio)
-#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) \cr
-#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) \cr
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
+#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' 
 #' #Read in single csv file (column type)
-#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, format = "column", compression=4) \cr
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, format = "column", compression=4) 
 #' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
 #' result$ls(recursive=TRUE)
 #' 
@@ -277,9 +277,9 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
 #' the datasets will be contained within distinct groups indexed by csv name.
 #' @param format
-#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written \cr
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). \cr
-#' If \code{compound}, the entire input dataset is written out on disk \cr
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
+#' If \code{compound}, the entire input dataset is written out on disk 
 #' as a complete dataframe.
 #' @param compression
 #' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).
@@ -293,14 +293,14 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' @examples  
 #' #Write df to csv in temp directory 
 #' library(hdfio)
-#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) \cr
-#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) \cr
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
+#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' df2 <- data.frame(a = runif(10), b=seq(1:10))
-#' utils::write.csv(x = df2, file = paste(tempdir(),"df2.csv",sep="/"), row.names = FALSE) \cr
+#' utils::write.csv(x = df2, file = paste(tempdir(),"df2.csv",sep="/"), row.names = FALSE) 
 #' list.files(tempdir())
 #' 
 #' #dir2h5 (column format)
-#' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) \cr
+#' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) 
 #' 
 #' #Results
 #' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
