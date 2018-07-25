@@ -223,12 +223,12 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' 
 #' #Read in single csv file (column type)
 #' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4) 
-#' result_col <- h5file(paste(tempdir(), "result_col.h5",sep = "/"))
+#' result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
 #' result_col$ls(recursive=TRUE)
 #' 
 #' #Read in single csv file (compound type)
 #' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
-#' result_comp <- h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
+#' result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
 #' result_comp$ls(recursive=TRUE)
 #' 
 #' 
@@ -304,14 +304,14 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) 
 #' 
 #' #Results
-#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
+#' result <- hdf5r::h5file(paste(tempdir(), "result.h5",sep = "/))
 #' result$ls(recursive=TRUE)
 #' 
 #' #dir2h5 (compound format)
 #' dir2h5(tempdir(), h5out = paste(tempdir(),"result2.h5",sep="/"),
 #' dataset=NULL, combined=FALSE, format = "compound", compression=4)
 #' #Results:
-#' result2 <- h5file(paste(tempdir(), "result2.h5",sep = "/"))
+#' result2 <- hdf5r::h5file(paste(tempdir(), "result2.h5",sep = "/"))
 #' result2$ls(recursive=TRUE)
 dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
