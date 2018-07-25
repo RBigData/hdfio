@@ -253,6 +253,7 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 
 #' write_h5df
 #' 
+#' @details 
 #' TODO
 #' 
 #' @param x
@@ -260,14 +261,16 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' @param file
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
-#' within a group named as the input dataset
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained \cr
+#' within a group named as the input dataset.
 #' @param format
 #' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, the entire input dataset is written out on disk
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). \cr
+#' If \code{compound}, the entire input dataset is written out on disk
 #' as a complete dataframe
 #' @param compression
-#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).
+#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).  Default is
+#' \code{compression} = 4. 
 #' 
 #' @return
 #' A dataframe.
@@ -277,43 +280,22 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' library(hdfio)
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
 #' (df)
-#'   x         y       z
-#' 1 1 0.7446626   Peter
-#' 2 2 0.9334611   Amber
-#' 3 3 0.3400924    John
-#' 4 4 0.9756722 Lindsey
-#' 5 5 0.3500774  Steven
 #' 
-#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3
-#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4)
-#'
-#' To verify, we can read the data back in. #Is it ok if we keep verbose = TRUE on for our readers??
+#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 \cr
+#' 
+#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) \cr
+#' #To verify, we can read the data back in. #Is it ok if we keep verbose = TRUE on for our readers??
 #' #Result
 #' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
-#' detecting format...hdfio_column          
-#'   x         y       z
-#' 1 1 0.7446626   Peter
-#' 2 2 0.9334611   Amber
-#' 3 3 0.3400924    John
-#' 4 4 0.9756722 Lindsey
-#' 5 5 0.3500774  Steven
 #' 
 #' 
 #' #Example 2
 #' #Write dataframe (df) out in compound format 
-#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4)
+#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4) \cr
 #' 
 #' #To verify, we read the data back in.
-#' 
 #' #Result
 #' read_h5df(paste(tempdir(), "example2.h5", sep="/"))
-#' detecting format...hdfio_compound 
-#'   x         y       z
-#' 1 1 0.7446626   Peter
-#' 2 2 0.9334611   Amber
-#' 3 3 0.3400924    John
-#' 4 4 0.9756722 Lindsey
-#' 5 5 0.3500774  Steven
 #' 
 #' 
 #' 

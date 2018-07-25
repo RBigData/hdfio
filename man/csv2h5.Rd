@@ -2,44 +2,34 @@
 % Please edit documentation in R/csv2h5.r
 \name{csv2h5}
 \alias{csv2h5}
-\alias{csv2h5}
-\alias{dir2h5}
 \title{csv2h5}
 \usage{
 csv2h5(file, h5out, dataset = NULL, format = "column", compression = 4,
   stringsAsFactors = FALSE, yolo = FALSE, verbose = FALSE)
-
-dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
-  compression = 4, stringsAsFactors = FALSE, yolo = FALSE,
-  verbose = FALSE)
 }
 \arguments{
 \item{file}{Input file.}
 
 \item{h5out}{Output file.}
 
-\item{dataset}{TODO}
+\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
+within a group named as the input dataset.}
 
-\item{format}{TODO}
+\item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
+the entire input dataset is written out on disk as a complete dataframe. Default is \code{column}.}
 
 \item{compression}{HDF5 compression level. An integer, 0 (least compression) to 9 (most
 compression).}
 
-\item{stringsAsFactors}{TODO}
+\item{stringsAsFactors}{Option to read character columns as factors. Default is \code{FALSE}.}
 
-\item{yolo}{TODO}
+\item{yolo}{Logical. If \code{FALSE}...}
 
-\item{verbose}{TODO}
-
-\item{csvdir}{TODO}
-
-\item{combined}{TODO}
-}
-\value{
-Invisibly returns \code{TRUE} on success.
+\item{verbose}{Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.}
 }
 \description{
-Convert a csv file or a directory of csv files to HDF5 dataset.
+Convert a csv file to HDF5 dataset.
 }
 \details{
 TODO

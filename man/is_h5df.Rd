@@ -2,14 +2,15 @@
 % Please edit documentation in R/is_h5df.r
 \name{is_h5df}
 \alias{is_h5df}
-\title{is_h5df}
+\title{Check if an HDF5 dataset is dataframe-like.}
 \usage{
 is_h5df(h5in, dataset = NULL)
 }
 \arguments{
 \item{h5in}{Input file.}
 
-\item{dataset}{TODO}
+\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
+within a group named as the input dataset}
 }
 \value{
 Returns \code{TRUE} on success, \code{FALSE} otherwise.
@@ -19,17 +20,6 @@ Check if an HDF5 dataset is dataframe-like.
 }
 \details{
 TODO
-}
-\examples{
-library(hdfio)
-
-f = system.file("exampledata/pytables_table.h5", package="hdfio")
-is_h5df(f, "mydata")
-is_h5df(f, "/")
-
-f = system.file("exampledata/not_h5df.h5", package="hdfio")
-is_h5df(f, "mydata")
-
 }
 \seealso{
 \code{\link{is_h5df}}

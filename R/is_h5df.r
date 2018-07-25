@@ -1,4 +1,4 @@
-#' is_h5df
+# is_h5df
 #' 
 #' Check if an HDF5 dataset is dataframe-like.
 #' 
@@ -8,25 +8,26 @@
 #' @param h5in
 #' Input file.
 #' @param dataset
-#' TODO
-#' 
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
+#' within a group named as the input dataset
 #' @return
 #' Returns \code{TRUE} on success, \code{FALSE} otherwise.
 #' 
-#' @examples
+#' 
+#' @example
 #' library(hdfio)
 #' 
 #' f = system.file("exampledata/pytables_table.h5", package="hdfio")
 #' is_h5df(f, "mydata")
-#' is_h5df(f, "/")
+#'
 #' 
 #' f = system.file("exampledata/not_h5df.h5", package="hdfio")
 #' is_h5df(f, "mydata")
-#' 
 #' @seealso
 #' \code{\link{is_h5df}}
 #' 
 #' @export
+
 is_h5df = function(h5in, dataset=NULL)
 {
   check.is.string(h5in)
@@ -40,3 +41,4 @@ is_h5df = function(h5in, dataset=NULL)
   
   fmt != "unknown"
 }
+

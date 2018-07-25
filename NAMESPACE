@@ -2,7 +2,6 @@
 
 S3method(print,summary_h5df)
 export(csv2h5)
-export(dir2h5)
 export(is_h5df)
 export(read_h5df)
 export(summarize_h5df)
