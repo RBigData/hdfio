@@ -217,12 +217,12 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
 
 
 write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
-  h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_compound"
-  h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
-  
-
-  hdf5r::createGroup(h5_fp, dataset)
-  h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
+  # h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_compound"
+  # h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
+  # 
+  # 
+  # hdf5r::createGroup(h5_fp, dataset)
+  # h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
   
   df <- hdfio:::format_df(x)
   if (start_ind == 1){ ### NOTE this is really a job for the initializer
