@@ -96,16 +96,20 @@ read_h5df_column = function(h5_fp, dataset, rows, cols, strings)
 
 
 
-read_h5df_compound=function(h5_fp, dataset)
+read_h5df_compound=function(h5_fp, dataset, rows)
  {
   
   datasets <- list.datasets(h5_fp[[dataset]])
   is_string = sapply(datasets, function(ds) h5_is_string(h5_fp, dataset, ds))
-  cols = 1:length(colnames)
   colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
   
-  df <- h5_fp[[glue(dataset,"data")]][]
-  colnames(df) <- colnames
+  if (!is.null(rows)) {
+    df <- h5_fp[[glue(dataset,"data")]][rows][]
+  }
+  else {
+    df <- h5_fp[[glue(dataset,"data")]][]
+    
+  }
   
   return(df)
 
@@ -247,7 +251,7 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, ver
   else if (fmt == "pytables_fixed")
     df = read_pytables_fixed(h5_fp, dataset, rows)
   else if (fmt == "hdfio_compound")
-    df = read_h5df_compound(h5_fp, dataset)
+    df = read_h5df_compound(h5_fp, dataset, rows)
   else
     close_and_stop(h5_fp, "unknown format")
   
