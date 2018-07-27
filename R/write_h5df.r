@@ -116,7 +116,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
     {
       if (is.character(col))
         col.fac = factor(col) # TODO grab levels
-      else if (is.factor(col)) { #Amil added this...not sure if needed.
+      else if (is.factor(col)) {
         col.fac = factor(col)
       }
       col = as.integer(col.fac)
@@ -162,7 +162,7 @@ comp_struc <- function(dataframe) {
   x <-  vector("list", length(classes))
   for (j in 1:ncol(dataframe)) {
     if(class(dataframe[,j]) =="character") {
-      strings_vec_max <- hdfio:::get_max_str_len(dataframe[,j])
+      strings_vec_max <- get_max_str_len(dataframe[,j])
       max_string <- strings_vec_max
       x[[j]] <- H5T_STRING$new(size = as.numeric(max_string)) 
     }
@@ -187,42 +187,18 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
   
   createGroup(h5_fp, dataset)
   h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
-  
-  types <- 1:ncol(x)
-  
-  for (j in 1:ncol(x)) {
-    if(class(x[,j]) =="character") {
-      types[j] = H5_STORAGE_STR 
-    }
-    else if (class(x[,j]) =="integer") {
-      types[j] = H5_STORAGE_INT
-    }
-    else if (class(x[,j]) == "logical") {
-      types[j] = H5_STORAGE_LGL
-    }
-    else if (class(x[,j]) == "factor") {
-      types[j] = H5_STORAGE_FAC 
-    }
-    else if (class(x[,j]) == "numeric") {
-      types[j] =  H5_STORAGE_DBL 
-    }
-    else {
-      types[j] = H5_STORAGE_DATE 
-    }
-  }
-  
-  return(types)
-  
+
+  return(NULL)
 }
 
 
 write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 
   
-  df <- hdfio:::format_df(x)
-  if (start_ind == 1){ ### NOTE this is really a job for the initializer
+  df <- format_df(x)
+  if (start_ind == 1){ 
 
-    comp <- hdfio:::comp_struc(df)
+    comp <- comp_struc(df)
     comp2 <- vector("list", 1L)
     comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
 
@@ -235,7 +211,7 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
   {
 
     indices <- start_ind:(start_ind + NROW(df) - 1)
-    h5_fp[[hdfio:::glue(dataset, "data")]][indices] <- df
+    h5_fp[[glue(dataset, "data")]][indices] <- df
 
   }
 
@@ -279,7 +255,7 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 
 #' 
 #' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) 
-#' #To verify, we can read the data back in. #Is it ok if we keep verbose = TRUE on for our readers??
+#' #To verify, we can read the data back in.
 #' #Result
 #' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
 #' 
@@ -301,8 +277,6 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
 {
   check.is.string(file)
-  if(file.exists(file))
-    file.remove(file)
   if (!is.null(dataset))
     check.is.string(dataset)
   else

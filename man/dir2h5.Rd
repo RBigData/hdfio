@@ -13,7 +13,7 @@ dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
 
 \item{h5out}{Output file.}
 
-\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
+\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
 within a group named as the input dataset}
 
 \item{combined}{#' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},

@@ -235,7 +235,7 @@ read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, ver
   
   h5_fp = h5file(h5in, mode="r")
   dataset = h5_get_dataset(h5_fp, dataset)
-  fmt = h5_detect_format(h5_fp, dataset, verbose=TRUE)
+  fmt = h5_detect_format(h5_fp, dataset, verbose)
   
   if (!is.null(cols) && fmt != "hdfio_column")
     close_and_stop(h5_fp, "argument 'cols' can only be a vector of indices if format is hdfio_column")

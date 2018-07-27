@@ -40,7 +40,7 @@ df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lin
 #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 
 
 write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) 
-#To verify, we can read the data back in. #Is it ok if we keep verbose = TRUE on for our readers??
+#To verify, we can read the data back in.
 #Result
 read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
 

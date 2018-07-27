@@ -96,20 +96,13 @@ csv2h5_file = function(file, h5_fp, dataset, format, stringsAsFactors, yolo, ver
     else
       x = csv_reader(file, skip=start_ind, nrows=nr, stringsAsFactors=stringsAsFactors)
     
-    if (format == "column") {
-      if (start_ind == 1)
-        types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
-      
-      writer(x, start_ind, h5_fp, dataset, types) 
-    }
-    else if (format == "compound") {
       if (start_ind == 1)
         types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
       
 
       writer(x, start_ind, h5_fp, dataset,types)
 
-    }
+    
 
   }
   
@@ -199,7 +192,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
 #' within a group named as the input dataset.
 #' @param format
 #' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
@@ -222,7 +215,7 @@ csv2h5_dir = function(files, h5_fp, dataset, format, stringsAsFactors, yolo, ver
 #' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' 
 #' #Read in single csv file (column type)
-#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4) 
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4)  
 #' result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
 #' result_col$ls(recursive=TRUE)
 #' 
@@ -273,7 +266,7 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
 #' within a group named as the input dataset
 #' @param combined
 #' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
@@ -293,7 +286,9 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
 #' 
 #' @examples  
+#' library(utils)
 #' library(hdfio)
+#' ilbrary(hdf5r)
 #' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
 #' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' df2 <- data.frame(a = runif(10), b=seq(1:10))
@@ -304,15 +299,20 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, str
 #' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) 
 #' 
 #' #Results
-#' result <- hdf5r::h5file(paste(tempdir(), "result.h5",sep = "/))
+#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
 #' result$ls(recursive=TRUE)
 #' 
 #' #dir2h5 (compound format)
 #' dir2h5(tempdir(), h5out = paste(tempdir(),"result2.h5",sep="/"),
 #' dataset=NULL, combined=FALSE, format = "compound", compression=4)
 #' #Results:
-#' result2 <- hdf5r::h5file(paste(tempdir(), "result2.h5",sep = "/"))
+#' result2 <- h5file(paste(tempdir(), "result2.h5",sep = "/"))
 #' result2$ls(recursive=TRUE)
+#' @rdname dir2h5
+#' @export
+#' 
+
+
 dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, stringsAsFactors=FALSE, yolo=FALSE, verbose=FALSE)
 {
   check.is.string(csvdir)
