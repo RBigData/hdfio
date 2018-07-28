@@ -1,0 +1,66 @@
+%\VignetteIndexEntry{Introducing the hdfio package: TODO}
+\documentclass[]{article}
+
+
+\input{./include/settings}
+
+
+\mytitle{Introducing the {hdfio} package: TODO}
+\mysubtitle{}
+\myversion{0.1-0}
+\myauthor{
+\centering
+Drew Schmidt \\
+\texttt{wrathematics@gmail.com} 
+\\[.4cm]
+%
+Amil Williamson \\
+\texttt{awilli69@vols.utk.edu}
+}
+
+
+\begin{document}
+\makefirstfew
+
+
+
+\section{Introduction}\label{introduction}
+
+TODO~\cite{folk1999hdf5}
+
+\subsection{Installation}\label{installation}
+
+You can install the stable version from CRAN using the usual
+\texttt{install.packages()}:
+
+\begin{lstlisting}[language=rr]
+install.packages("hdfio")
+\end{lstlisting}
+
+The development version is maintained on GitHub. You can install this
+version using any of the well-known installer packages available to R:
+
+\begin{lstlisting}[language=rr]
+### Pick your preference
+devtools::install_github("rbigdata/hdfio")
+remotes::install_github("rbigdata/hdfio")
+\end{lstlisting}
+
+
+
+
+\section{Examples}
+
+
+
+
+\section{Internals: Supported Storage Types}
+
+
+
+
+\addcontentsline{toc}{section}{References}
+\bibliography{./include/hdfio}
+\bibliographystyle{plain}
+
+\end{document}
