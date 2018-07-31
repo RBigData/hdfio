@@ -116,7 +116,9 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
     {
       if (is.character(col))
         col.fac = factor(col) # TODO grab levels
-      
+      else if (is.factor(col)) {
+        col.fac = factor(col)
+      }
       col = as.integer(col.fac)
     }
     else if (types[j] == H5_STORAGE_STR)
@@ -136,7 +138,7 @@ write_h5df_column = function(x, start_ind, h5_fp, dataset, types)
 # -----------------------------------------------------------------------------
 # compound
 # -----------------------------------------------------------------------------
-#Helper Function 1
+
 format_df <- function(dataframe) {
   if(!is.data.frame(dataframe)) {
     stop("Object provided is not a dataframe")
@@ -145,27 +147,30 @@ format_df <- function(dataframe) {
     dataframe <- as.data.frame(dataframe)
   }
   for (j in 1:ncol(dataframe)) {
-    if(class(dataframe[,j]) == "logical") {
-      dataframe[,j] <- as.character(dataframe[,j])  #if columns are all NA, it's imported as logical class (fread)
+    if(class(dataframe[,j]) == "factor") {
+      dataframe[,j] <- as.character(dataframe[,j])  
     }
   }
   dataframe <- dataframe 
 }
 
 
-#Helper Function 2
+
 comp_struc <- function(dataframe) {
   max_string <- NA
   classes <- unlist(lapply(dataframe, class))
   x <-  vector("list", length(classes))
   for (j in 1:ncol(dataframe)) {
-    if(class(dataframe[,j]) =="character" | class(dataframe[,j]) == "factor") {
-      strings_vec_max <- hdfio:::get_max_str_len(dataframe[,j])
+    if(class(dataframe[,j]) =="character") {
+      strings_vec_max <- get_max_str_len(dataframe[,j])
       max_string <- strings_vec_max
       x[[j]] <- H5T_STRING$new(size = as.numeric(max_string)) 
     }
     else if(class(dataframe[,j]) == "integer") {
       x[[j]] <-  h5types$H5T_NATIVE_INT  
+    }
+    else if (class(dataframe[,j]) == "logical") {
+      x[[j]] <- H5T_LOGICAL$new() 
     }
     else {
       x[[j]] <- h5types$H5T_NATIVE_DOUBLE
@@ -182,27 +187,36 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
   
   createGroup(h5_fp, dataset)
   h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
-  
+
+  return(NULL)
 }
 
 
+write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 
+  
+  df <- format_df(x)
+  if (start_ind == 1){ 
 
-write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
-  
-  hdf5r::createGroup(h5_fp, dataset)
-  
-  df <- x
-  df <- format_df(df)
-  comp <- comp_struc(df)
-  comp2 <- vector("list", 1L)
-  comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
-  
-  
-  h5_fp[[dataset]]$create_dataset(name="data", robj = df, dtype=comp2,
-                                  space=H5S$new(dims = nrow(df), maxdims = Inf))
-  
+    comp <- comp_struc(df)
+    comp2 <- vector("list", 1L)
+    comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
+
+    h5_fp[[dataset]]$create_dataset(name="data", robj = df, dtype=comp2,space=H5S$new(dims = nrow(df), maxdims = Inf))
+
+  }
+
+  else
+
+  {
+
+    indices <- start_ind:(start_ind + NROW(df) - 1)
+    h5_fp[[glue(dataset, "data")]][indices] <- df
+
+  }
+
 }
+
 
 # -----------------------------------------------------------------------------
 # interface
@@ -210,6 +224,7 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
 
 #' write_h5df
 #' 
+#' @details 
 #' TODO
 #' 
 #' @param x
@@ -217,19 +232,43 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset) {
 #' @param file
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case, TODO
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
+#' within a group named as the input dataset.
 #' @param format
-#' TODO
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
+#' If \code{compound}, the entire input dataset is written out on disk
+#' as a complete dataframe
 #' @param compression
-#' TODO
+#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).  Default is
+#' \code{compression} = 4. 
 #' 
 #' @return
 #' A dataframe.
 #' 
 #' @examples
+#' #Example 1
 #' library(hdfio)
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
+#' (df)
 #' 
-#' # TODO
+#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 
+#' 
+#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) 
+#' #To verify, we can read the data back in.
+#' #Result
+#' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
+#' 
+#' 
+#' #Example 2
+#' #Write dataframe (df) out in compound format 
+#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4) 
+#' 
+#' #To verify, we read the data back in.
+#' #Result
+#' read_h5df(paste(tempdir(), "example2.h5", sep="/"))
+#' 
+#' 
 #' 
 #' @seealso
 #' \code{\link{read_h5df}}
@@ -265,9 +304,11 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   } 
   else if (format == "compound")
   {
-    write_h5df_compound(x, 1, h5_fp, dataset)
+    types=write_h5df_compound_init(x, h5_fp, dataset, strlens=NULL, compression=compression)
+    write_h5df_compound(x, 1, h5_fp, dataset, types)
     
   }
   
   h5close(h5_fp)
 }
+

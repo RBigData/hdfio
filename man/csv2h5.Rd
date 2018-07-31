@@ -2,51 +2,55 @@
 % Please edit documentation in R/csv2h5.r
 \name{csv2h5}
 \alias{csv2h5}
-\alias{csv2h5}
-\alias{dir2h5}
 \title{csv2h5}
 \usage{
 csv2h5(file, h5out, dataset = NULL, header = "auto", format = "column",
   compression = 4, yolo = FALSE, verbose = FALSE, ...)
-
-dir2h5(csvdir, h5out, dataset = NULL, recursive = FALSE, combined = TRUE,
-  header = "all", format = "column", compression = 4, yolo = FALSE,
-  verbose = FALSE, ...)
 }
 \arguments{
 \item{file}{Input file.}
 
 \item{h5out}{Output file.}
 
-\item{dataset}{TODO}
+\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
+within a group named as the input dataset.}
 
-\item{header}{TODO}
-
-\item{format}{TODO}
+\item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
+the entire input dataset is written out on disk as a complete dataframe. Default is \code{column}.}
 
 \item{compression}{HDF5 compression level. An integer, 0 (least compression) to 9 (most
 compression).}
 
-\item{yolo}{TODO}
+\item{yolo}{Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.}
 
 \item{verbose}{TODO}
 
 \item{...}{Additional arguments passed to \code{fread()}. Can not include \code{file},
 \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
 \code{data.table}.}
-
-\item{csvdir}{TODO}
-
-\item{combined}{TODO}
-
-\item{header}{TODO: all, first, none}
-}
-\value{
-Invisibly returns \code{TRUE} on success.
 }
 \description{
-Convert a csv file or a directory of csv files to HDF5 dataset.
+Convert a csv file to HDF5 dataset.
 }
 \details{
 TODO
+}
+\examples{
+#Write df to csv in temp directory 
+library(hdfio)
+df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
+utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
+
+#Read in single csv file (column type)
+csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4)  
+result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
+result_col$ls(recursive=TRUE)
+
+#Read in single csv file (compound type)
+csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
+result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
+result_comp$ls(recursive=TRUE)
+
+
 }

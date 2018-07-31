@@ -7,3 +7,16 @@ src/*.so
 
 *.Rhistory
 *.Rproj
+.Rproj.user
+
+inst/doc
+*.pdf
+*.aux
+*.bbl
+*.blg
+*.out
+*.toc
+
+*.log
+*.status
+

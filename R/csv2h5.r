@@ -58,6 +58,11 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
     writer_init = write_h5df_column_init
   }
   
+  else if (format == "compound") {
+    writer = write_h5df_compound
+    writer_init = write_h5df_compound_init
+  }
+  
   nrows = csv_nrows(file)
   num_chunks = chunker_numchunks(file)
   indices = chunker_indices(nrows, num_chunks)
@@ -91,10 +96,14 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
     else
       x = csv_reader(file, skip=start_ind, nrows=nr, ...)
     
-    if (start_ind == 1)
-      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      if (start_ind == 1)
+        types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      
+
+      writer(x, start_ind, h5_fp, dataset,types)
+
     
-    writer(x, start_ind, h5_fp, dataset, types)
+
   }
   
   verbprint(verbose, "done!\n")
@@ -112,6 +121,11 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
     writer_init = write_h5df_column_init
   }
   
+  else if (format == "compound") 
+  {
+    writer = write_h5df_compound
+    writer_init = write_h5df_compound_init
+  }
   
   if (isTRUE(yolo))
   {
@@ -141,71 +155,78 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
     
     x = csv_reader(file, ...)
     
-    if (start_ind == 1)
-      types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
-    
-    verbprint(verbose, "ok! writing...")
-    writer(x, start_ind, h5_fp, dataset, types)
-    verbprint(verbose, "ok!\n")
-    
-    start_ind = start_ind + NROW(x)
+  
+      
+      if (start_ind == 1)
+        types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
+      
+      verbprint(verbose, "ok! writing...")
+      writer(x, start_ind, h5_fp, dataset,types)
+      verbprint(verbose, "ok!\n")
+      
+      start_ind = start_ind + NROW(x)
+      
+
+
   }
   
   verbprint(verbose, "done!\n")
-  
   invisible(TRUE)
+  
+  
 }
-
 
 
 # -----------------------------------------------------------------------------
 # interface
 # -----------------------------------------------------------------------------
-
 #' csv2h5
 #' 
-#' Convert a csv file or a directory of csv files to HDF5 dataset.
+#' 
+#' Convert a csv file to HDF5 dataset.
 #' 
 #' @details
 #' TODO
-#' 
 #' @param file
 #' Input file.
-#' @param csvdir
-#' TODO
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' TODO
-#' @param header
-#' TODO
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
+#' within a group named as the input dataset.
 #' @param format
-#' TODO
-#' @param header
-#' TODO: all, first, none
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
+#' the entire input dataset is written out on disk as a complete dataframe. Default is \code{column}.
 #' @param compression
 #' HDF5 compression level. An integer, 0 (least compression) to 9 (most
 #' compression).
 #' @param yolo
-#' TODO
+#' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
 #' @param verbose
-#' TODO
-#' @param combined
 #' TODO
 #' @param ...
 #' Additional arguments passed to \code{fread()}. Can not include \code{file},
 #' \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
 #' \code{data.table}.
 #' 
-#' @return
-#' Invisibly returns \code{TRUE} on success.
+#' @examples
+#' #Write df to csv in temp directory 
+#' library(hdfio)
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
+#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' 
-#' @name csv2h5
-#' @rdname csv2h5
-NULL
-
-
-
+#' #Read in single csv file (column type)
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4)  
+#' result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
+#' result_col$ls(recursive=TRUE)
+#' 
+#' #Read in single csv file (compound type)
+#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
+#' result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
+#' result_comp$ls(recursive=TRUE)
+#' 
+#' 
 #' @rdname csv2h5
 #' @export
 csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
@@ -221,7 +242,7 @@ csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", com
     header = match.arg(tolower(header), "auto")
   else
     check.is.flag(header)
-  format = match.arg(tolower(format), c("column")) # TODO compound
+  format = match.arg(tolower(format), c("column", "compound")) 
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
@@ -238,7 +259,58 @@ csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", com
 
 
 
-#' @rdname csv2h5
+
+#' dir2h5
+#' 
+#' 
+#' Convert a directory of csv files to HDF5 datasets.
+#' 
+#' @param csvdir
+#' Valid directory containing csv files
+#' @param h5out
+#' Output file.
+#' @param dataset
+#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
+#' within a group named as the input dataset
+#' @param combined
+#' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
+#' the datasets will be contained within distinct groups indexed by csv name.
+#' @param format
+#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
+#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
+#' If \code{compound}, the entire input dataset is written out on disk 
+#' as a complete dataframe.
+#' @param compression
+#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).
+#' @param yolo
+#' Logical. If \code{FALSE}...
+#' @param verbose
+#' Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
+#' 
+#' @examples  
+#' library(utils)
+#' library(hdfio)
+#' ilbrary(hdf5r)
+#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
+#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
+#' df2 <- data.frame(a = runif(10), b=seq(1:10))
+#' utils::write.csv(x = df2, file = paste(tempdir(),"df2.csv",sep="/"), row.names = FALSE) 
+#' list.files(tempdir())
+#' 
+#' #dir2h5 (column format)
+#' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) 
+#' 
+#' #Results
+#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
+#' result$ls(recursive=TRUE)
+#' 
+#' #dir2h5 (compound format)
+#' dir2h5(tempdir(), h5out = paste(tempdir(),"result2.h5",sep="/"),
+#' dataset=NULL, combined=FALSE, format = "compound", compression=4)
+#' #Results:
+#' result2 <- h5file(paste(tempdir(), "result2.h5",sep = "/"))
+#' result2$ls(recursive=TRUE)
+#' @rdname dir2h5
 #' @export
 dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, header="all", format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
@@ -252,7 +324,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, h
     header = match.arg(tolower(header), c("all", "first", "auto"))
   else
     check.is.flag(header)
-  format = match.arg(tolower(format), c("column")) # TODO compound
+  format = match.arg(tolower(format), c("column", "compound"))
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
     stop("argument 'compression' must be an integer in the range 0 to 9")
@@ -271,7 +343,7 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, h
     }
   }
   
-  files = dir(csvdir, pattern="*.csv", full.names=TRUE, ignore.case=TRUE)
+  files = dir(csvdir, pattern="*\\.csv$", full.names=TRUE, ignore.case=TRUE)
   if (length(files) == 0)
     close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
   
