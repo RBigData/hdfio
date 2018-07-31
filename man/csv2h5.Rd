@@ -37,6 +37,7 @@ Convert a csv file to HDF5 dataset.
 TODO
 }
 \examples{
+\dontrun{ #TODO FIXME
 #Write df to csv in temp directory 
 library(hdfio)
 df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
@@ -51,6 +52,6 @@ result_col$ls(recursive=TRUE)
 csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
 result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
 result_comp$ls(recursive=TRUE)
-
+}
 
 }

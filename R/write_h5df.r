@@ -14,7 +14,6 @@ check_df_cols = function(df)
 
 
 
-
 write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
 {
   h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_column"
@@ -181,7 +180,6 @@ comp_struc <- function(dataframe) {
 
 
 write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression) {
-  
   h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_compound"
   h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
   
@@ -193,28 +191,19 @@ write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression
 
 
 write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
-
-  
   df <- format_df(x)
   if (start_ind == 1){ 
-
     comp <- comp_struc(df)
     comp2 <- vector("list", 1L)
     comp2 <- H5T_COMPOUND$new(names(df), dtypes=comp)
-
+    
     h5_fp[[dataset]]$create_dataset(name="data", robj = df, dtype=comp2,space=H5S$new(dims = nrow(df), maxdims = Inf))
-
   }
-
   else
-
   {
-
     indices <- start_ind:(start_ind + NROW(df) - 1)
     h5_fp[[glue(dataset, "data")]][indices] <- df
-
   }
-
 }
 
 
@@ -311,4 +300,3 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   
   h5close(h5_fp)
 }
-
