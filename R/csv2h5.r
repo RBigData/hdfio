@@ -177,8 +177,12 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
 #' Output file.
 #' @param dataset
 #' TODO
+#' @param header
+#' TODO
 #' @param format
 #' TODO
+#' @param header
+#' TODO: all, first, none
 #' @param compression
 #' HDF5 compression level. An integer, 0 (least compression) to 9 (most
 #' compression).
@@ -204,7 +208,7 @@ NULL
 
 #' @rdname csv2h5
 #' @export
-csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
+csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
   check.is.string(file)
   check.file(file)
@@ -213,6 +217,10 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, yol
     check.is.string(dataset)
   else
     dataset = h5_infer_dataset(file)
+  if (is.character(header))
+    header = match.arg(tolower(header), "auto")
+  else
+    check.is.flag(header)
   format = match.arg(tolower(format), c("column")) # TODO compound
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)
@@ -232,13 +240,18 @@ csv2h5 = function(file, h5out, dataset=NULL, format="column", compression=4, yol
 
 #' @rdname csv2h5
 #' @export
-dir2h5 = function(csvdir, h5out, dataset=NULL, combined=TRUE, format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
+dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, header="all", format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
   check.is.string(csvdir)
   check.is.string(h5out)
   if (!is.null(dataset))
     check.is.string(dataset)
+  check.is.flag(recursive)
   check.is.flag(combined)
+  if (is.character(header))
+    header = match.arg(tolower(header), c("all", "first", "auto"))
+  else
+    check.is.flag(header)
   format = match.arg(tolower(format), c("column")) # TODO compound
   check.is.natnum(compression)
   if (compression > 9 || compression < 0)

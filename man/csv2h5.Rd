@@ -6,11 +6,12 @@
 \alias{dir2h5}
 \title{csv2h5}
 \usage{
-csv2h5(file, h5out, dataset = NULL, format = "column", compression = 4,
-  yolo = FALSE, verbose = FALSE, ...)
-
-dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
+csv2h5(file, h5out, dataset = NULL, header = "auto", format = "column",
   compression = 4, yolo = FALSE, verbose = FALSE, ...)
+
+dir2h5(csvdir, h5out, dataset = NULL, recursive = FALSE, combined = TRUE,
+  header = "all", format = "column", compression = 4, yolo = FALSE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{file}{Input file.}
@@ -18,6 +19,8 @@ dir2h5(csvdir, h5out, dataset = NULL, combined = TRUE, format = "column",
 \item{h5out}{Output file.}
 
 \item{dataset}{TODO}
+
+\item{header}{TODO}
 
 \item{format}{TODO}
 
@@ -35,6 +38,8 @@ compression).}
 \item{csvdir}{TODO}
 
 \item{combined}{TODO}
+
+\item{header}{TODO: all, first, none}
 }
 \value{
 Invisibly returns \code{TRUE} on success.
