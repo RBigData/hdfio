@@ -104,6 +104,8 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
 #' @param dataset
 #' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
 #' within a group named as the input dataset.
+#' @param header
+#' TODO
 #' @param format
 #' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
 #' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
@@ -128,12 +130,24 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
 #' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 #' 
 #' #Read in single csv file (column type)
-#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4)  
+#' csv2h5(
+#'   paste(tempdir(),"df.csv",sep="/"),
+#'   h5out = paste(tempdir(),
+#'   "result_col.h5",sep="/"),
+#'   dataset=NULL,
+#'   format = "column",
+#'   compression=4)  
 #' result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
 #' result_col$ls(recursive=TRUE)
 #' 
 #' #Read in single csv file (compound type)
-#' csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
+#' csv2h5(
+#'   paste(tempdir(),
+#'   "df.csv",sep="/"),
+#'   h5out = paste(tempdir(), "result_comp.h5", sep="/"),
+#'   dataset=NULL,
+#'   format = "compound",
+#'   compression=4) 
 #' result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
 #' result_comp$ls(recursive=TRUE)
 #' }

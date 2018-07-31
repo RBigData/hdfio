@@ -238,12 +238,21 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' @examples
 #' #Example 1
 #' library(hdfio)
-#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
-#' (df)
+#' df = data.frame(
+#'   x=seq(1:5),
+#'   y = c(runif(5)),
+#'   z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
+#' df
 #' 
-#' #Writing out data in column format to a hdf5 group "data", where each variable is indexed as x1,x2, and x3 
+#' # Writing out data in column format to a hdf5 group "data", where each
+#' # variable is indexed as x1,x2, and x3 
 #' 
-#' write_h5df(x = df, file = paste(tempdir(), "example.h5", sep="/"), dataset = "data", format = "column", compression=4) 
+#' write_h5df(
+#'   x = df,
+#'   file = paste(tempdir(), "example.h5", sep="/"),
+#'   dataset = "data",
+#'   format = "column",
+#'   compression=4) 
 #' #To verify, we can read the data back in.
 #' #Result
 #' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
@@ -251,12 +260,16 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' 
 #' #Example 2
 #' #Write dataframe (df) out in compound format 
-#' write_h5df(x = df, file = paste(tempdir(), "example2.h5", sep="/"), dataset = "data", format = "compound", compression=4) 
+#' write_h5df(
+#'   x = df,
+#'   file = paste(tempdir(), "example2.h5", sep="/"),
+#'   dataset = "data",
+#'   format = "compound",
+#'   compression=4) 
 #' 
 #' #To verify, we read the data back in.
 #' #Result
 #' read_h5df(paste(tempdir(), "example2.h5", sep="/"))
-#' 
 #' 
 #' 
 #' @seealso

@@ -19,4 +19,4 @@ inst/doc
 
 *.log
 *.status
-
+*.out

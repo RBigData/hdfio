@@ -81,9 +81,13 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
 #' @param dataset
 #' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
 #' within a group named as the input dataset
+#' @param recursive
+#' TODO
 #' @param combined
 #' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
 #' the datasets will be contained within distinct groups indexed by csv name.
+#' @param header
+#' TODO
 #' @param format
 #' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
 #' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
@@ -95,6 +99,10 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
 #' Logical. If \code{FALSE}...
 #' @param verbose
 #' Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
+#' @param ...
+#' Additional arguments passed to \code{fread()}. Can not include \code{file},
+#' \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
+#' \code{data.table}.
 #' 
 #' @examples
 #' \dontrun{ #TODO FIXME
@@ -108,17 +116,23 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
 #' list.files(tempdir())
 #' 
 #' #dir2h5 (column format)
-#' dir2h5(tempdir(), h5out = paste(tempdir(),"result.h5",sep="/"), dataset=NULL, combined=FALSE, format = "column", compression=4) 
+#' dir2h5(
+#'   tempdir(),
+#'   h5out = paste(tempdir(),"result.h5",sep="/"),
+#'   dataset=NULL,
+#'   combined=FALSE,
+#'   format = "column",
+#'   compression=4) 
 #' 
 #' #Results
-#' result <- h5file(paste(tempdir(), "result.h5",sep = "/))
+#' result <- h5file(paste(tempdir(), "result.h5", sep = "/))
 #' result$ls(recursive=TRUE)
 #' 
 #' #dir2h5 (compound format)
-#' dir2h5(tempdir(), h5out = paste(tempdir(),"result2.h5",sep="/"),
+#' dir2h5(tempdir(), h5out = paste(tempdir(), "result2.h5", sep="/"),
 #' dataset=NULL, combined=FALSE, format = "compound", compression=4)
 #' #Results:
-#' result2 <- h5file(paste(tempdir(), "result2.h5",sep = "/"))
+#' result2 <- h5file(paste(tempdir(), "result2.h5", sep = "/"))
 #' result2$ls(recursive=TRUE)
 #' }
 #' 

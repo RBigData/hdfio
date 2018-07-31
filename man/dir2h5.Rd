@@ -16,8 +16,12 @@ dir2h5(csvdir, h5out, dataset = NULL, recursive = FALSE, combined = TRUE,
 \item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
 within a group named as the input dataset}
 
+\item{recursive}{TODO}
+
 \item{combined}{#' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
 the datasets will be contained within distinct groups indexed by csv name.}
+
+\item{header}{TODO}
 
 \item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
 out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
@@ -29,6 +33,10 @@ as a complete dataframe.}
 \item{yolo}{Logical. If \code{FALSE}...}
 
 \item{verbose}{Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.}
+
+\item{...}{Additional arguments passed to \code{fread()}. Can not include \code{file},
+\code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
+\code{data.table}.}
 }
 \description{
 Convert a directory of csv files to HDF5 datasets.

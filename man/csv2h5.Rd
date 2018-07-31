@@ -15,6 +15,8 @@ csv2h5(file, h5out, dataset = NULL, header = "auto", format = "column",
 \item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
 within a group named as the input dataset.}
 
+\item{header}{TODO}
+
 \item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
 out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
 the entire input dataset is written out on disk as a complete dataframe. Default is \code{column}.}
@@ -44,12 +46,24 @@ df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lin
 utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
 
 #Read in single csv file (column type)
-csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_col.h5",sep="/"), dataset=NULL, format = "column", compression=4)  
+csv2h5(
+  paste(tempdir(),"df.csv",sep="/"),
+  h5out = paste(tempdir(),
+  "result_col.h5",sep="/"),
+  dataset=NULL,
+  format = "column",
+  compression=4)  
 result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
 result_col$ls(recursive=TRUE)
 
 #Read in single csv file (compound type)
-csv2h5(paste(tempdir(),"df.csv",sep="/"), h5out = paste(tempdir(),"result_comp.h5",sep="/"), dataset=NULL, format = "compound", compression=4) 
+csv2h5(
+  paste(tempdir(),
+  "df.csv",sep="/"),
+  h5out = paste(tempdir(), "result_comp.h5", sep="/"),
+  dataset=NULL,
+  format = "compound",
+  compression=4) 
 result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
 result_comp$ls(recursive=TRUE)
 }
