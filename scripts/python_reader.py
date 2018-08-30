@@ -27,17 +27,17 @@ def read_h5df(file, dataset=None, rows=None, cols=None):
   if  rows == None:
     rows = range(0, m)
   if cols == None:
-    cols = range(1, n+1)
+    cols = range(0, n)
   
   l = list()
   for i in cols:
-    tmp = f[dataset + '/x' + str(i)][rows]
+    tmp = f[dataset + '/x' + str(i+1)][rows]
     l.append(tmp)
   
   f.close()
   
   df = pandas.DataFrame(l).T
-  df.columns = colnames
+  df.columns = colnames[cols]
   return df
 
 
