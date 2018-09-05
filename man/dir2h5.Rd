@@ -4,9 +4,9 @@
 \alias{dir2h5}
 \title{dir2h5}
 \usage{
-dir2h5(csvdir, h5out, dataset = NULL, recursive = FALSE, combined = TRUE,
-  header = "all", format = "column", compression = 4, yolo = FALSE,
-  verbose = FALSE, ...)
+dir2h5(csvdir, h5out, dataset = NULL, recursive = FALSE,
+  combined = TRUE, header = "all", format = "column",
+  compression = 4, yolo = FALSE, verbose = FALSE, ...)
 }
 \arguments{
 \item{csvdir}{Valid directory containing csv files}

@@ -4,7 +4,8 @@
 \alias{write_h5df}
 \title{write_h5df}
 \usage{
-write_h5df(x, file, dataset = NULL, format = "column", compression = 4)
+write_h5df(x, file, dataset = NULL, format = "column",
+  compression = 4)
 }
 \arguments{
 \item{x}{Input dataset (dataframe or datatable)}

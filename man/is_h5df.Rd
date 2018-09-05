@@ -24,7 +24,7 @@ TODO
 \examples{
 library(hdfio)
 f = system.file("exampledata/pytables_table.h5", package="hdfio")
-is_h5df(f, dataset=NULL)
+is_h5df(f)
 
 
 }

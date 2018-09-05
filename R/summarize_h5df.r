@@ -32,8 +32,8 @@ summarize_dataset = function(h5_fp, dataset, colnames)
 #' 
 #' @examples
 #' library(hdfio)
-#' h5in = system.file("exampledata/pytables_table.h5", package="hdfio")
-#' summarize_h5df(h5in)
+#' f = system.file("exampledata/pytables_table.h5", package="hdfio")
+#' summarize_h5df(f)
 #' 
 #' @export
 summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)
