@@ -17,7 +17,7 @@
 #' @examples 
 #' library(hdfio)
 #' f = system.file("exampledata/pytables_table.h5", package="hdfio")
-#' is_h5df(f, dataset=NULL)
+#' is_h5df(f)
 #'
 #' 
 #' @seealso
@@ -38,4 +38,3 @@ is_h5df = function(h5in, dataset=NULL)
   
   fmt != "unknown"
 }
-

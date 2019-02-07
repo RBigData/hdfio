@@ -4,8 +4,9 @@
 \alias{csv2h5}
 \title{csv2h5}
 \usage{
-csv2h5(file, h5out, dataset = NULL, header = "auto", format = "column",
-  compression = 4, yolo = FALSE, verbose = FALSE, ...)
+csv2h5(file, h5out, dataset = NULL, header = "auto",
+  format = "column", compression = 4, yolo = FALSE,
+  verbose = FALSE, ...)
 }
 \arguments{
 \item{file}{Input file.}

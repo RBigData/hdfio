@@ -29,8 +29,8 @@ TODO
 \examples{
 library(hdfio)
 
-h5in = system.file("exampledata/pytables_table.h5", package="hdfio")
-df = read_h5df(h5in, "mydata")
+f = system.file("exampledata/pytables_table.h5", package="hdfio")
+df = read_h5df(f, "mydata")
 df
 
 }
