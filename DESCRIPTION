@@ -8,7 +8,7 @@ Depends:
     R (>= 3.1.0)
 Imports:
     data.table (>= 1.11.0),
-    lineSampler,
+    filesampler (>= 0.4-0),
     memuse (>= 4.0.0),
     hdf5r (>= 1.0.0)
 Suggests:
@@ -21,4 +21,4 @@ Authors@R: c(
     person("ORNL", role = "cph")
     )
 Maintainer: Drew Schmidt <wrathematics@gmail.com>
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.0

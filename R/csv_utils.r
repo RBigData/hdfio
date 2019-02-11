@@ -1,6 +1,6 @@
 csv_nrows = function(csvfile)
 {
-  lineSampler::wc_l(csvfile)$lines
+  filesampler::wc_l(csvfile)$lines
 }
 
 csv_ncols = function(csvfile)
