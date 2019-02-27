@@ -260,15 +260,17 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   
   if (format == "column")
   {
-    types = write_h5df_column_init(x, h5_fp, dataset, strlens=NULL, compression=compression)
-    write_h5df_column(x, 1, h5_fp, dataset, types)
+    writer_init = write_h5df_column_init
+    writer = write_h5df_column
   } 
   else if (format == "compound")
   {
-    types=write_h5df_compound_init(x, h5_fp, dataset, strlens=NULL, compression=compression)
-    write_h5df_compound(x, 1, h5_fp, dataset, types)
-    
+    writer_init = write_h5df_compound_init
+    writer = write_h5df_compound
   }
+  
+  types = writer_init(x, h5_fp, dataset, strlens=NULL, compression=compression)
+  writer(x, 1, h5_fp, dataset, types)
   
   h5close(h5_fp)
   invisible(TRUE)
