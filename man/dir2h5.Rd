@@ -13,31 +13,33 @@ dir2h5(csvdir, h5out, dataset = NULL, recursive = FALSE,
 
 \item{h5out}{Output file.}
 
-\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
-within a group named as the input dataset}
+\item{dataset}{Name of the data within the HDF5 file. If none is supplied, then this will be
+inferred from the input file name.}
 
 \item{recursive}{TODO}
 
-\item{combined}{#' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
-the datasets will be contained within distinct groups indexed by csv name.}
+\item{combined}{Should the csv files will be writen as a single HDF5 dataset?}
 
 \item{header}{TODO}
 
-\item{format}{Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
-If \code{compound}, the entire input dataset is written out on disk 
-as a complete dataframe.}
+\item{format}{One of \code{column} or \code{compound}.}
 
-\item{compression}{HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).}
+\item{compression}{HDF5 compression level. An integer between 0 (least) to 9 (most).}
 
-\item{yolo}{Logical. If \code{FALSE}...}
+\item{yolo}{Do you want to skip input file checks? Faster, but dangerous.}
 
-\item{verbose}{Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.}
+\item{verbose}{Option to enable}
 
 \item{...}{Additional arguments passed to \code{fread()}. Can not include \code{file},
 \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
 \code{data.table}.}
 }
+\value{
+Invisibly returns \code{TRUE}.
+}
 \description{
 Convert a directory of csv files to HDF5 datasets.
+}
+\details{
+TODO
 }

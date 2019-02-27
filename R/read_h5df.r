@@ -186,10 +186,14 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' 
 #' TODO
 #' 
+#' @details
+#' TODO
+#' 
 #' @param h5in
 #' Input file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case, TODO
+#' Name of the data within the HDF5 file. If none is supplied, then this will be
+#' inferred from the input file name.
 #' @param rows
 #' TODO
 #' @param cols
@@ -201,16 +205,6 @@ read_pytables_table = function(h5_fp, dataset, rows)
 #' 
 #' @return
 #' A dataframe.
-#' 
-#' @examples
-#' library(hdfio)
-#' 
-#' f = system.file("exampledata/pytables_table.h5", package="hdfio")
-#' df = read_h5df(f, "mydata")
-#' df
-#' 
-#' @seealso
-#' \code{\link{write_h5df}}
 #' 
 #' @export
 read_h5df = function(h5in, dataset=NULL, rows=NULL, cols=NULL, strings=TRUE, verbose=FALSE)

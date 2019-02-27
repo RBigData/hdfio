@@ -9,7 +9,8 @@ summarize_h5df(h5in, dataset = NULL, colnames = FALSE)
 \arguments{
 \item{h5in}{Input file.}
 
-\item{dataset}{TODO}
+\item{dataset}{Name of the data within the HDF5 file. If none is supplied, then this will be
+inferred from the input file name.}
 
 \item{colnames}{TODO}
 }
@@ -18,10 +19,4 @@ TODO
 }
 \description{
 TODO
-}
-\examples{
-library(hdfio)
-f = system.file("exampledata/pytables_table.h5", package="hdfio")
-summarize_h5df(f)
-
 }

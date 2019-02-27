@@ -214,66 +214,24 @@ write_h5df_compound = function(x, start_ind, h5_fp, dataset,types) {
 #' write_h5df
 #' 
 #' @details 
-#' TODO
+#' The input dataset should be dataframe-like (one of \code{data.frame},
+#' \code{data.table}, or \code{tbl_df}), or coercible to a \code{data.frame} via
+#' \code{as.data.frame()}.
 #' 
 #' @param x
-#' Input dataset (dataframe or datatable)
+#' Input dataset.
 #' @param file
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
-#' within a group named as the input dataset.
+#' Name of the data within the HDF5 file. If none is supplied, then this will be
+#' inferred from the input file name.
 #' @param format
-#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
-#' If \code{compound}, the entire input dataset is written out on disk
-#' as a complete dataframe
+#' One of \code{column} or \code{compound}.
 #' @param compression
-#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).  Default is
-#' \code{compression} = 4. 
+#' HDF5 compression level. An integer between 0 (least) to 9 (most).
 #' 
 #' @return
-#' A dataframe.
-#' 
-#' @examples
-#' #Example 1
-#' library(hdfio)
-#' df = data.frame(
-#'   x=seq(1:5),
-#'   y = c(runif(5)),
-#'   z= c("Peter", "Amber", "John", "Lindsey", "Steven"))
-#' df
-#' 
-#' # Writing out data in column format to a hdf5 group "data", where each
-#' # variable is indexed as x1,x2, and x3 
-#' 
-#' write_h5df(
-#'   x = df,
-#'   file = paste(tempdir(), "example.h5", sep="/"),
-#'   dataset = "data",
-#'   format = "column",
-#'   compression=4) 
-#' #To verify, we can read the data back in.
-#' #Result
-#' read_h5df(paste(tempdir(), "example.h5", sep="/"), "data")
-#' 
-#' 
-#' #Example 2
-#' #Write dataframe (df) out in compound format 
-#' write_h5df(
-#'   x = df,
-#'   file = paste(tempdir(), "example2.h5", sep="/"),
-#'   dataset = "data",
-#'   format = "compound",
-#'   compression=4) 
-#' 
-#' #To verify, we read the data back in.
-#' #Result
-#' read_h5df(paste(tempdir(), "example2.h5", sep="/"))
-#' 
-#' 
-#' @seealso
-#' \code{\link{read_h5df}}
+#' Invisibly returns \code{TRUE}.
 #' 
 #' @export
 write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
@@ -293,8 +251,9 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   else if (inherits(x, "tbl_df"))
     class(x) = "data.frame"
   else if (!is.data.frame(x))
-    stop("argument 'x' must be a data.frame or data.table object")
+    x = as.data.frame(x)
   check_df_cols(x)
+  
   
   h5_fp = h5file(file, mode="a")
   h5_check_dataset(h5_fp, dataset)
@@ -312,4 +271,5 @@ write_h5df = function(x, file, dataset=NULL, format="column", compression=4)
   }
   
   h5close(h5_fp)
+  invisible(TRUE)
 }

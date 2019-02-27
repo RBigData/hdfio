@@ -83,69 +83,38 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
 #' 
 #' Convert a directory of csv files to HDF5 datasets.
 #' 
+#' @details
+#' TODO
+#' 
 #' @param csvdir
 #' Valid directory containing csv files
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset (named "data") will be contained 
-#' within a group named as the input dataset
+#' Name of the data within the HDF5 file. If none is supplied, then this will be
+#' inferred from the input file name.
 #' @param recursive
 #' TODO
 #' @param combined
-#' #' Logical.  If \code{TRUE}, the csv files will be writen as a single HDF5 dataset.  If \code{FALSE},
-#' the datasets will be contained within distinct groups indexed by csv name.
+#' Should the csv files will be writen as a single HDF5 dataset?
 #' @param header
 #' TODO
 #' @param format
-#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). 
-#' If \code{compound}, the entire input dataset is written out on disk 
-#' as a complete dataframe.
+#' One of \code{column} or \code{compound}.
 #' @param compression
-#' HDF5 compression level. An integer, 0 (least compression) to 9 (most compression).
+#' HDF5 compression level. An integer between 0 (least) to 9 (most).
 #' @param yolo
-#' Logical. If \code{FALSE}...
+#' Do you want to skip input file checks? Faster, but dangerous.
 #' @param verbose
-#' Logical. Detailed information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
+#' Option to enable 
 #' @param ...
 #' Additional arguments passed to \code{fread()}. Can not include \code{file},
 #' \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
 #' \code{data.table}.
 #' 
-#' @examples
-#' \dontrun{ #TODO FIXME
-#' library(utils)
-#' library(hdfio)
-#' library(hdf5r)
-#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
-#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
-#' df2 <- data.frame(a = runif(10), b=seq(1:10))
-#' utils::write.csv(x = df2, file = paste(tempdir(),"df2.csv",sep="/"), row.names = FALSE) 
-#' list.files(tempdir())
+#' @return
+#' Invisibly returns \code{TRUE}.
 #' 
-#' #dir2h5 (column format)
-#' dir2h5(
-#'   tempdir(),
-#'   h5out = paste(tempdir(),"result.h5",sep="/"),
-#'   dataset=NULL,
-#'   combined=FALSE,
-#'   format = "column",
-#'   compression=4) 
-#' 
-#' #Results
-#' result <- h5file(paste(tempdir(), "result.h5", sep = "/))
-#' result$ls(recursive=TRUE)
-#' 
-#' #dir2h5 (compound format)
-#' dir2h5(tempdir(), h5out = paste(tempdir(), "result2.h5", sep="/"),
-#' dataset=NULL, combined=FALSE, format = "compound", compression=4)
-#' #Results:
-#' result2 <- h5file(paste(tempdir(), "result2.h5", sep = "/"))
-#' result2$ls(recursive=TRUE)
-#' }
-#' 
-#' @rdname dir2h5
 #' @export
 dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, header="all", format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
@@ -202,4 +171,5 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, h
   verbprint(verbose, "Total time: ", timefmt(t_total), "s\n\n")
   
   h5close(h5_fp)
+  invisible(TRUE)
 }

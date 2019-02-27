@@ -23,17 +23,13 @@ summarize_dataset = function(h5_fp, dataset, colnames)
 #' @param h5in
 #' Input file.
 #' @param dataset
-#' TODO
+#' Name of the data within the HDF5 file. If none is supplied, then this will be
+#' inferred from the input file name.
 #' @param colnames
 #' TODO
 #' 
 #' @return
 #' TODO
-#' 
-#' @examples
-#' library(hdfio)
-#' f = system.file("exampledata/pytables_table.h5", package="hdfio")
-#' summarize_h5df(f)
 #' 
 #' @export
 summarize_h5df = function(h5in, dataset=NULL, colnames=FALSE)

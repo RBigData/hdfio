@@ -9,8 +9,8 @@ is_h5df(h5in, dataset = NULL)
 \arguments{
 \item{h5in}{Input file.}
 
-\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
-within a group named as the input dataset}
+\item{dataset}{Name of the data within the HDF5 file. If none is supplied, then this will be
+inferred from the input file name.}
 }
 \value{
 Returns \code{TRUE} on success, \code{FALSE} otherwise.
@@ -20,14 +20,4 @@ Check if an HDF5 dataset is dataframe-like.
 }
 \details{
 TODO
-}
-\examples{
-library(hdfio)
-f = system.file("exampledata/pytables_table.h5", package="hdfio")
-is_h5df(f)
-
-
-}
-\seealso{
-\code{\link{is_h5df}}
 }

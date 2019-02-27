@@ -8,23 +8,13 @@
 #' @param h5in
 #' Input file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained
-#' within a group named as the input dataset
+#' Name of the data within the HDF5 file. If none is supplied, then this will be
+#' inferred from the input file name.
+#' 
 #' @return
 #' Returns \code{TRUE} on success, \code{FALSE} otherwise.
 #' 
-#' 
-#' @examples 
-#' library(hdfio)
-#' f = system.file("exampledata/pytables_table.h5", package="hdfio")
-#' is_h5df(f)
-#'
-#' 
-#' @seealso
-#' \code{\link{is_h5df}}
-#' 
 #' @export
-
 is_h5df = function(h5in, dataset=NULL)
 {
   check.is.string(h5in)

@@ -10,7 +10,8 @@ read_h5df(h5in, dataset = NULL, rows = NULL, cols = NULL,
 \arguments{
 \item{h5in}{Input file.}
 
-\item{dataset}{Dataset in input file to read or \code{NULL}. In the latter case, TODO}
+\item{dataset}{Name of the data within the HDF5 file. If none is supplied, then this will be
+inferred from the input file name.}
 
 \item{rows}{TODO}
 
@@ -26,14 +27,6 @@ A dataframe.
 \description{
 TODO
 }
-\examples{
-library(hdfio)
-
-f = system.file("exampledata/pytables_table.h5", package="hdfio")
-df = read_h5df(f, "mydata")
-df
-
-}
-\seealso{
-\code{\link{write_h5df}}
+\details{
+TODO
 }

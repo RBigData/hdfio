@@ -102,24 +102,22 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
 #' 
 #' @details
 #' TODO
+#' 
 #' @param file
 #' Input file.
 #' @param h5out
 #' Output file.
 #' @param dataset
-#' Dataset in input file to read or \code{NULL}. In the latter case (e.g. \code{NULL}), the dataset will be contained 
-#' within a group named as the input dataset.
+#' Name of the data within the HDF5 file. If none is supplied, then this will be
+#' inferred from the input file name.
 #' @param header
 #' TODO
 #' @param format
-#' Method chosen for writing out h5 file.  If \code{column}, each column of the input dataset is written 
-#' out on disk as x_i with "i" being an arbitrary column index, ranging as intengers from 1:ncol(dataframe). If \code{compound}, 
-#' the entire input dataset is written out on disk as a complete dataframe. Default is \code{column}.
+#' One of \code{column} or \code{compound}.
 #' @param compression
-#' HDF5 compression level. An integer, 0 (least compression) to 9 (most
-#' compression).
+#' HDF5 compression level. An integer between 0 (least) to 9 (most).
 #' @param yolo
-#' Logical. Information on \code{R} processes are shown for HDF5 processes. Default is \code{FALSE}.
+#' Do you want to skip input file checks? Faster, but dangerous.
 #' @param verbose
 #' TODO
 #' @param ...
@@ -127,37 +125,9 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
 #' \code{skip}, \code{nrows}, \code{verbose}, \code{showProgress}, or
 #' \code{data.table}.
 #' 
-#' @examples
-#' \dontrun{ #TODO FIXME
-#' #Write df to csv in temp directory 
-#' library(hdfio)
-#' df = data.frame(x=seq(1:5), y = c(runif(5)), z= c("Peter", "Amber", "John", "Lindsey", "Steven")) 
-#' utils::write.csv(x = df, file = paste(tempdir(),"df.csv",sep="/"), row.names = FALSE) 
+#' @return
+#' Invisibly returns \code{TRUE}.
 #' 
-#' #Read in single csv file (column type)
-#' csv2h5(
-#'   paste(tempdir(),"df.csv",sep="/"),
-#'   h5out = paste(tempdir(),
-#'   "result_col.h5",sep="/"),
-#'   dataset=NULL,
-#'   format = "column",
-#'   compression=4)  
-#' result_col <- hdf5r::h5file(paste(tempdir(), "result_col.h5",sep = "/"))
-#' result_col$ls(recursive=TRUE)
-#' 
-#' #Read in single csv file (compound type)
-#' csv2h5(
-#'   paste(tempdir(),
-#'   "df.csv",sep="/"),
-#'   h5out = paste(tempdir(), "result_comp.h5", sep="/"),
-#'   dataset=NULL,
-#'   format = "compound",
-#'   compression=4) 
-#' result_comp <- hdf5r::h5file(paste(tempdir(), "result_comp.h5",sep = "/"))
-#' result_comp$ls(recursive=TRUE)
-#' }
-#' 
-#' @rdname csv2h5
 #' @export
 csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", compression=4, yolo=FALSE, verbose=FALSE, ...)
 {
@@ -179,6 +149,7 @@ csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", com
   check.is.flag(yolo)
   check.is.flag(verbose)
   
+  
   h5_fp = h5file(h5out, mode="a")
   h5_check_dataset(h5_fp, dataset)
   
@@ -188,4 +159,5 @@ csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", com
   verbprint(verbose, "Total time: ", timefmt(t_total), "s\n\n")
   
   h5close(h5_fp)
+  invisible(TRUE)
 }
