@@ -32,7 +32,7 @@ csv2h5_get_strlen = function(files, lens=integer(ncols) - 1L, ...)
 
 
 
-csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression, ...)
+csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression, ..., verbose_preprint="")
 {
   if (format == "column")
   {
@@ -51,22 +51,25 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
   
   if (isTRUE(yolo))
   {
-    verbprint(verbose, "Living dangerously...\n")
+    verbprint(verbose, verbose_preprint, "Living dangerously...")
     strlens = NULL
+    t_scan = timeprint(verbose)
   }
   else
   {
-    verbprint(verbose, "Scanning all input files for storage info...")
+    t_scan0 = verbprint(verbose, verbose_preprint, "Detecting column storage...")
     strlens = csv2h5_get_strlen(file)
-    verbprint(verbose, "ok!\n")
+    t_scan1 = verbprint(verbose, "ok!")
+    t_scan = timeprint(verbose, t_scan0, t_scan1)
   }
   
   
   n = length(indices)
-  progress_printer(0, n, verbose)
+  progress_printer(0, n, verbose, verbose_preprint)
+  t_conv0 = proc.time()
   for (i in 1:n)
   {
-    progress_printer(i, n, verbose)
+    progress_printer(i, n, verbose, verbose_preprint)
     
     start_ind = indices[[i]][1]
     end = indices[[i]][2]
@@ -84,9 +87,11 @@ csv2h5_file = function(file, h5_fp, dataset, format, yolo, verbose, compression,
       writer(x, start_ind, h5_fp, dataset,types)
   }
   
-  verbprint(verbose, "done!\n")
+  t_conv1 = proc.time()
+  verbprint(verbose, "ok!")
+  t_conv = timeprint(verbose, t_conv0, t_conv1)
   
-  invisible(TRUE)
+  t_scan + t_conv
 }
 
 
@@ -177,7 +182,10 @@ csv2h5 = function(file, h5out, dataset=NULL, header="auto", format="column", com
   h5_fp = h5file(h5out, mode="a")
   h5_check_dataset(h5_fp, dataset)
   
-  csv2h5_file(file, h5_fp, dataset, format, yolo, verbose, compression, ...)
+  verbprint(verbose, paste("Processing 1 file(s):\n"))
+  verbprint(verbose, paste0("    ", file, "\n"))
+  t_total = csv2h5_file(file, h5_fp, dataset, format, yolo, verbose, compression, ..., verbose_preprint="        ")
+  verbprint(verbose, "Total time: ", timefmt(t_total), "s\n\n")
   
   h5close(h5_fp)
 }

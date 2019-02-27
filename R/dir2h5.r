@@ -26,46 +26,55 @@ csv2h5_dir = function(files, h5_fp, dataset, format, yolo, verbose, compression,
     writer_init = write_h5df_compound_init
   }
   
+  n = length(files)
+  verbprint(verbose, "Processing ", length(files), " files:\n")
+  preprint = "    "
+  
   if (isTRUE(yolo))
   {
-    verbprint(verbose, "Living dangerously...\n")
+    verbprint(verbose, preprint, "Living dangerously...")
     strlens = NULL
+    t_header = t_scan = timeprint(verbose)
   }
   else
   {
-    verbprint(verbose, "Checking input files for common header lines...")
+    t_header0 = verbprint(verbose, preprint, "Checking column names...")
     csv2h5_validation_dir(files, h5_fp)
-    verbprint(verbose, "ok!\n")
+    t_header1 = verbprint(verbose, "ok!")
+    t_header = timeprint(verbose, t_header0, t_header1)
     
-    verbprint(verbose, "Scanning all input files for storage info...")
+    t_scan0 = verbprint(verbose, preprint, "Scanning all input files for storage info...")
     strlens = csv2h5_get_strlen(files)
-    verbprint(verbose, "ok!\n")
+    t_scan1 = verbprint(verbose, "ok!")
+    t_scan = timeprint(verbose, t_scan0, t_scan1)
   }
   
   
   start_ind = 1
-  
-  n = length(files)
-  verbprint(verbose, paste("Processing", length(files), "files:\n"))
+  t_read = 0
+  t_write = 0
   for (file in files)
   {
-    verbprint(verbose, paste0("    ", file, ": reading..."))
+    verbprint(verbose, preprint, file, "\n")
     # TODO batch process csv files?
     
+    t_read0 = verbprint(verbose, preprint, preprint, "reading...")
     x = csv_reader(file, ...)
+    t_read1 = verbprint(verbose, "ok!")
+    t_read = t_read + timeprint(verbose, t_read0, t_read1)
     
+    t_write0 = verbprint(verbose, preprint, preprint, "writing...")
     if (start_ind == 1)
       types = writer_init(x, h5_fp, dataset, strlens=strlens, compression=compression)
     
-    verbprint(verbose, "ok! writing...")
     writer(x, start_ind, h5_fp, dataset,types)
-    verbprint(verbose, "ok!\n")
+    t_write1 = verbprint(verbose, "ok!")
+    t_write = t_write + timeprint(verbose, t_write0, t_write1)
     
     start_ind = start_ind + NROW(x)
   }
   
-  verbprint(verbose, "done!\n")
-  invisible(TRUE)
+  t_header + t_scan + t_read + t_write
 }
 
 
@@ -165,6 +174,9 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, h
     if (isTRUE(combined))
     {
       dataset = h5_infer_dataset(csvdir, dir=TRUE)
+      if (substr(dataset, 1, 1) == ".")
+        close_and_stop(h5_fp, paste0("invalid inferred dataset name: \"", dataset, "\"; please provide a valid argument to 'dataset'"))
+      
       h5_check_dataset(h5_fp, dataset)
     }
   }
@@ -174,18 +186,20 @@ dir2h5 = function(csvdir, h5out, dataset=NULL, recursive=FALSE, combined=TRUE, h
     close_and_stop(h5_fp, paste0("no csv files found in csvdir=", csvdir))
   
   if (isTRUE(combined))
-    csv2h5_dir(files, h5_fp, dataset, format, yolo, verbose, compression, ...)
+    t_total = csv2h5_dir(files, h5_fp, dataset, format, yolo, verbose, compression, ...)
   else
   {
-    verbprint(verbose, paste("Processing", length(files), "files:\n"))
+    t_total = 0
+    verbprint(verbose, paste("Processing", length(files), "file(s):\n"))
     for (file in files)
     {
-      verbprint(verbose, paste0("    ", file, " "))
+      verbprint(verbose, paste0("    ", file, "\n"))
       dataset = h5_infer_dataset(file)
-      csv2h5_file(file, h5_fp, dataset, format, yolo, verbose, compression, ...)
+      t_total = t_total + csv2h5_file(file, h5_fp, dataset, format, yolo, verbose, compression, ..., verbose_preprint="        ")
     }
   }
   
+  verbprint(verbose, "Total time: ", timefmt(t_total), "s\n\n")
   
   h5close(h5_fp)
 }
