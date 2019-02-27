@@ -10,7 +10,24 @@ verbprint = function(verbose, ...)
   if (isTRUE(verbose))
     cat(paste0(...))
   
-  invisible()
+  proc.time()
+}
+
+
+
+timefmt = function(t) sprintf("%.2f", t)
+
+timeprint = function(verbose, t0, t1, ...)
+{
+  if (missing(t0) && missing(t1))
+    t = 0
+  else
+    t = t1[[3]] - t0[[3]]
+  
+  if (isTRUE(verbose))
+    cat(paste0(" [took ", timefmt(t), "s]\n"), ...)
+  
+  t
 }
 
 
