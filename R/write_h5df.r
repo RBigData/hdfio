@@ -16,10 +16,9 @@ check_df_cols = function(df)
 
 write_h5df_column_init = function(x, h5_fp, dataset, strlens=NULL, compression)
 {
-  h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_column"
-  h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
-  
   createGroup(h5_fp, dataset)
+  h5attr(h5_fp[[dataset]], "TABLE_FORMAT") = HDFIO_FORMAT_COLUMN
+  h5attr(h5_fp[[dataset]], "HDFIO_VERSION") = HDFIO_VERSION
   h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
   
   types = integer(ncol(x))
@@ -180,10 +179,9 @@ comp_struc <- function(dataframe) {
 
 
 write_h5df_compound_init = function(x, h5_fp, dataset, strlens=NULL, compression) {
-  h5attr(h5_fp, "TABLE_FORMAT") = "hdfio_compound"
-  h5attr(h5_fp, "HDFIO_VERSION") = HDFIO_VERSION
-  
   createGroup(h5_fp, dataset)
+  h5attr(h5_fp[[dataset]], "TABLE_FORMAT") = HDFIO_FORMAT_COMPOUND
+  h5attr(h5_fp[[dataset]], "HDFIO_VERSION") = HDFIO_VERSION
   h5attr(h5_fp[[dataset]], "VARNAMES") = names(x)
 
   return(NULL)

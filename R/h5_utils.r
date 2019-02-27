@@ -30,16 +30,15 @@ h5_detect_format = function(h5_fp, dataset, verbose=FALSE)
     cat("detecting format...")
   
   attrs = h5attributes(h5_fp)
+  attrs_dataset = h5attributes(h5_fp[[dataset]])
   
-  if (!is.null(attrs$TABLE_FORMAT))
-    fmt = attrs$TABLE_FORMAT
+  if (!is.null(attrs_dataset$TABLE_FORMAT))
+    fmt = attrs_dataset$TABLE_FORMAT
   else if (!is.null(attrs$PYTABLES_FORMAT_VERSION))
   {
-    attrs_table = h5attributes(h5_fp[[dataset]])
-    
-    if (isTRUE(attrs_table$pandas_type == "frame_table"))
+    if (isTRUE(attrs_dataset$pandas_type == "frame_table"))
       fmt = "pytables_table"
-    else if (isTRUE(attrs_table$pandas_type == "frame"))
+    else if (isTRUE(attrs_dataset$pandas_type == "frame"))
       fmt = "pytables_fixed"
     else
       fmt = "unknown"
