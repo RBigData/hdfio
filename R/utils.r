@@ -32,33 +32,27 @@ ndigits = function(n)
 
 
 
-progress_printer = function(i, n, verbose)
+progress_printer = function(i, n, verbose, preprint="")
 {
   if (!isTRUE(verbose))
     return(invisible())
   
   
   nd = ndigits(n)
+  trailing = "..."
   
   if (i == 0)
-  {
-    cat("Processing batch ")
-    cat(paste0(rep(" ", nd), collapse=""))
-  }
+    cat(paste0(preprint, "Processing batch "), paste0(rep(" ", nd), collapse=""))
   else
   {
-    nd_i = ndigits(i)
+    nd_i = ndigits(i) + nchar(trailing)
     for (j in 1:(nd_i + nd + 1L))
       cat("\b")
     
     cat(i)
   }
   
-  cat("/")
-  cat(n)
-  
-  if (i == n)
-    cat("\n")
+  cat(paste0("/", n, trailing))
 }
 
 
