@@ -5,10 +5,10 @@ glue = function(a, b)
 
 
 
-verbprint = function(verbose, msg)
+verbprint = function(verbose, ...)
 {
   if (isTRUE(verbose))
-    cat(msg)
+    cat(paste0(...))
   
   invisible()
 }
