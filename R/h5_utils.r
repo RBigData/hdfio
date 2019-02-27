@@ -144,7 +144,7 @@ h5_list_datasets = function(h5_fp, dataset)
 h5_infer_dataset = function(x, dir=FALSE)
 {
   if (isTRUE(dir))
-    basename(file)
+    basename(x)
   else
     gsub("[.].*", "", basename(x))
 }
