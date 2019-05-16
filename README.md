@@ -124,35 +124,35 @@ summarize_h5df("/tmp/airlines.h5", "airlines1988", colnames=TRUE)
 ##         Format:     hdfio_column 
 ##         Dimensions: 5202096 x 29 
 ##         Columns:     
-##             1. Year
-##             2. Month
-##             3. DayofMonth
-##             4. DayOfWeek
-##             5. DepTime
-##             6. CRSDepTime
-##             7. ArrTime
-##             8. CRSArrTime
-##             9. UniqueCarrier
-##             10. FlightNum
-##             11. TailNum
-##             12. ActualElapsedTime
-##             13. CRSElapsedTime
-##             14. AirTime
-##             15. ArrDelay
-##             16. DepDelay
-##             17. Origin
-##             18. Dest
-##             19. Distance
-##             20. TaxiIn
-##             21. TaxiOut
-##             22. Cancelled
-##             23. CancellationCode
-##             24. Diverted
-##             25. CarrierDelay
-##             26. WeatherDelay
-##             27. NASDelay
-##             28. SecurityDelay
-##             29. LateAircraftDelay
+##              1. Year              integer
+##              2. Month             integer
+##              3. DayofMonth        integer
+##              4. DayOfWeek         integer
+##              5. DepTime           integer
+##              6. CRSDepTime        integer
+##              7. ArrTime           integer
+##              8. CRSArrTime        integer
+##              9. UniqueCarrier     character
+##             10. FlightNum         integer
+##             11. TailNum           logical
+##             12. ActualElapsedTime integer
+##             13. CRSElapsedTime    integer
+##             14. AirTime           logical
+##             15. ArrDelay          integer
+##             16. DepDelay          integer
+##             17. Origin            character
+##             18. Dest              character
+##             19. Distance          integer
+##             20. TaxiIn            logical
+##             21. TaxiOut           logical
+##             22. Cancelled         integer
+##             23. CancellationCode  logical
+##             24. Diverted          integer
+##             25. CarrierDelay      logical
+##             26. WeatherDelay      logical
+##             27. NASDelay          logical
+##             28. SecurityDelay     logical
+##             29. LateAircraftDelay logical
 ```
 
 The other way to transform a csv file into an HDF5 file is the `csv2h5()` function:

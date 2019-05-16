@@ -1,3 +1,43 @@
+read_coltypes = function(h5_fp, dataset)
+{
+  colnames = h5attributes(h5_fp[[dataset]])$VARNAMES
+  ncols = length(colnames)
+  
+  t = character(length(colnames))
+  for (j in 1:ncols)
+  {
+    nm = paste0("x", j)
+    class = h5attributes(h5_fp[[glue(dataset, nm)]])$CLASS
+    
+    if (length(class) == 0)
+    {
+      h5t = h5_fp[[glue(dataset, nm)]]$get_type()$to_text()
+      if (grepl("H5T_IEEE_F64", h5t))
+        t[j] = "double"
+      else if (grepl("H5T_IEEE_F32", h5t))
+        t[j] = "float"
+      else if (grepl("H5T_STD_I32", h5t))
+        t[j] = "integer"
+      else
+        t[j] = "unknown"
+    }
+    else if (class == H5_STORAGE_STR)
+      t[j] = "character"
+    else if (class == H5_STORAGE_LGL)
+      t[j] = "logical"
+    else if (class == H5_STORAGE_DATE)
+      t[j] = "date"
+    else if (class == H5_STORAGE_FAC)
+      t[j] = "factor"
+    else
+      close_and_stop(h5_fp, INTERNAL_ERROR)
+  }
+  
+  t
+}
+
+
+
 summarize_dataset = function(h5_fp, dataset, colnames)
 {
   format = h5_detect_format(h5_fp, dataset)
@@ -7,11 +47,17 @@ summarize_dataset = function(h5_fp, dataset, colnames)
   dim = h5_dim(h5_fp, dataset)
   
   if (isTRUE(colnames))
+  {
     cn = h5_colnames(h5_fp, dataset)
+    ct = read_coltypes(h5_fp, dataset)
+  }
   else
+  {
     cn = NULL
+    ct = NULL
+  }
   
-  list(dataset=dataset, format=format, dim=dim, colnames=cn)
+  list(dataset=dataset, format=format, dim=dim, colnames=cn, coltypes=ct)
 }
 
 
@@ -89,8 +135,20 @@ print.summary_h5df = function(x, ...)
       cat("        Dimensions:", ds$dim[1], "x", ds$dim[2], "\n")
     if (!is.null(ds$colnames))
     {
-      num = 1:length(ds$colnames)
-      cat("        Columns:    ", "\n", paste0("           ", num, ". ", ds$colnames, "\n"))
+      ncols = length(ds$colnames)
+      ncols_nd = ndigits(ncols)
+      colnames_nc = max(nchar(ds$colnames)) + 1
+      
+      cat(
+        "        Columns:    ",
+        "\n",
+        paste0("           ",
+        sprintf(paste0("%", ncols_nd, "d"), 1:ncols),
+        ". ",
+        sprintf(paste0("%-", colnames_nc, "s"), ds$colnames),
+        ds$coltypes,
+        "\n")
+      )
     }
   }
   
